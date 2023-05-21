@@ -30,7 +30,7 @@ There are a few possible build tools that we can utilize, namely Bazel, CMake, S
 - [MVP] Proper Authentication and Encryption
     - Similar to B2B, only Labs products should be able to access the engine
     - Handles retrieving a Python user from the request to the C++ engine. This can be as simple as requiring requests to pass in a pennkey in the request body or a session-id in the request header.
-- [Future] Logs to record uncompleted, successful, and failed transactions
+- [MVP] Logs to record uncompleted, successful, and failed transactions
     - Important for debugging and fault tolerance against database crashes
     - Invariant: the server should still work even if the database doesn't!
 - [Future] Programmer interface to enable existing products to interact with the engine
@@ -58,3 +58,25 @@ While this project has gained the attention of many Labs members for its focus o
 As important as analytics are, and as interesting as performance-based programming is, our goal as a club should still be to develop **products** for students. Speed and availability are important, but they should not be the primary focus for a social-good-oriented club like Labs. Club members should enjoy the work that they are doing! But a large part of developing for Labs is the greater good that comes out of it — giving back with features that benefit the Penn community. To that end, if it is between creating a new feature or reducing response times by a quarter of a second, efficiency can wait.
 
 With that said, we should _not_ recruit new club members for solely C++ projects. Developing for social good is still the goal, and we want future classes to know this too! Labs newbies will have a primary product team to work with, where they can build front-facing features and learn first-class development practices. Moreover, if they are interested in performance-based projects like this, they are welcome to work on them in conjunction with their designated product.
+
+# Setup
+
+### Install Bazel
+```
+$ brew install bazel
+```
+
+### Install Make
+```
+$ brew install make
+```
+
+### Run Server
+```
+$ make all
+```
+
+
+### Recommendations
+- Install the Bazel extension for syntax highlighting on BUILD files
+- Read [this](https://bazel.build/start/cpp) documentation to get yourself familiar with Bazel project structure
