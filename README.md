@@ -107,10 +107,16 @@ You may need to subsequently reload VSCode [(CMD/CTRL+SHIFT+P)->reload] for the 
 
 ### Install Clang-Format
 
-`brew install clang-format`
+```
+$ brew install clang-format
+```
 
 In the VSCode extensions, download `Clang-Format` by Xaver Hellauer. Follow the instructions in the details section. For the location of `clang-format.executable`,
-run `where clang-format` in the command line, and enter that as the path of the executable.
+run the following on the command line, then enter the result as the path of the executable:
+
+```
+$ where clang-format
+```
 
 Format on save is highly encouraged.
 
