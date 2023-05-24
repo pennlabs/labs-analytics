@@ -1,8 +1,8 @@
-#include "src/lib/hello-time.hpp"
 #include "hello-greet.hpp"
+#include "src/lib/hello-time.hpp"
+#include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <string>
-#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -21,6 +21,11 @@ int main(int argc, char** argv) {
   // Check if the string starts with "Hello"
   bool startsWithHello = boost::algorithm::starts_with(greet, "Hello");
   cout << "Starts with \"Hello\": " << (startsWithHello ? "Yes" : "No") << endl;
+
+  if (true) {
+  }
+
+  char* x;
 
   print_localtime();
 

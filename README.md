@@ -105,6 +105,14 @@ If turning on automatic updates doesn't prompt you to download the actual `clang
 
 You may need to subsequently reload VSCode [(CMD/CTRL+SHIFT+P)->reload] for the plugin to load. The `clangd` download should prompt you to do so when it completes.
 
+### Install Clang-Format
+
+`brew install clang-format`
+
+In the VSCode extensions, download `Clang-Format` by Xaver Hellauer. Follow the instructions in the details section. For the location of `clang-format.executable`,
+run `where clang-format` in the command line, and enter that as the path of the executable.
+
+Format on save is highly encouraged.
 
 ### Run Server
 ```
