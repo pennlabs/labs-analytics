@@ -71,11 +71,59 @@ $ brew install bazel
 $ brew install make
 ```
 
+### Install the Syntax Highligher and Intellisense
+
+Gathered from [Hedron's Compile Commands Extractor for Bazel — User Interface](https://github.com/hedronvision/bazel-compile-commands-extractor):
+
+```bash
+code --install-extension llvm-vs-code-extensions.vscode-clangd
+# We also need make sure that Microsoft's C++ extension is not involved and interfering.
+code --uninstall-extension ms-vscode.cpptools
+```
+
+Then, open VSCode *user* settings (JSON), so things will be automatically set up for all projects you open.
+
+Search for "clangd".
+
+If not present, add the following to the JSON file:
+
+```json
+{
+...
+"clangd.onConfigChanged": "restart",
+"clangd.checkUpdates": true,
+"clangd.arguments": [
+    "--header-insertion=never",
+    "--compile-commands-dir=${workspaceFolder}/",
+    "--query-driver=**"
+],
+...
+}
+```
+
+If turning on automatic updates doesn't prompt you to download the actual `clangd` server binary, hit (CMD/CTRL+SHIFT+P)->Download language Server.
+
+You may need to subsequently reload VSCode [(CMD/CTRL+SHIFT+P)->reload] for the plugin to load. The `clangd` download should prompt you to do so when it completes.
+
+### Install Clang-Format
+
+```
+$ brew install clang-format
+```
+
+In the VSCode extensions, download `Clang-Format` by Xaver Hellauer. Follow the instructions in the details section. For the location of `clang-format.executable`,
+run the following on the command line, then enter the result as the path of the executable:
+
+```
+$ where clang-format
+```
+
+Format on save is highly encouraged.
+
 ### Run Server
 ```
 $ make all
 ```
-
 
 ### Recommendations
 - Install the Bazel extension for syntax highlighting on BUILD files
