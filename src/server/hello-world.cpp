@@ -12,6 +12,8 @@ int main(int argc, char** argv) {
     who = argv[1];
   }
 
+  auto test_string = "test_string";
+
   auto greet = get_greet(who);
 
   cout << greet << endl;
