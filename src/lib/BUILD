@@ -7,3 +7,9 @@ cc_library(
     srcs = ["hello-time.cpp"],
     hdrs = ["hello-time.hpp"],
 )
+
+cc_library(
+    name = "database_client",
+    srcs = ["database_client.cpp"],
+    hdrs = ["database_client.hpp"]
+)
