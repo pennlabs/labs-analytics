@@ -14,6 +14,7 @@ cc_binary(
     deps = [
         ":hello-greet",
         "//src/lib:hello-time",
+        "//src/lib:file_client",
         "@boost//:process"
     ],
 )

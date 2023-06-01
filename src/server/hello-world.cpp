@@ -1,4 +1,5 @@
 #include "hello-greet.hpp"
+#include "src/lib/file_client.hpp"
 #include "src/lib/hello-time.hpp"
 #include <boost/algorithm/string.hpp>
 #include <iostream>
@@ -7,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-  string who = "world";
+  /*string who = "world";
   if (argc > 1) {
     who = argv[1];
   }
@@ -27,7 +28,12 @@ int main(int argc, char** argv) {
 
   char* x;
 
-  print_localtime();
+  print_localtime();*/
+
+  FileClient f;
+
+  f.start_read_stream();
+  cout << f.m_next_transaction_id << endl;
 
   return 0;
 }
