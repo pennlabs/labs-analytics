@@ -30,10 +30,30 @@ int main(int argc, char** argv) {
 
   print_localtime();*/
 
-  FileClient f;
+  FileClient fc;
+  fc.write("hello\ntest\nyes sir");
+  fc.write("another\nyou know\n how it goes");
 
-  f.start_read_stream();
-  cout << f.m_next_transaction_id << endl;
+  fc.force_flush();
+
+  FileIterator fi;
+
+  fi.has_next();
+  fi.has_next();
+  fi.has_next();
+  fi.has_next();
+
+  cout << fi.get_next() << endl;
+  cout << fi.get_next() << endl;
+
+  fi.commit(Status::Ok());
+
+  cout << fi.get_next() << endl;
+  cout << fi.get_next() << endl;
+
+  fi.commit(Status::Ok());
+
+  cout << fi.has_next() << endl;
 
   return 0;
 }

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-#define DELIMITER "ඞ\n"
+#define DELIMITER "ඞ"
 
 #define WRITE_LOG "./logs/write_log"
 #define ERROR_LOG "./logs/error_log"
@@ -11,12 +11,15 @@
 
 class Status {
 public:
-  Status();
+  Status(std::string detail);
 
   std::string detail();
 
-  static Status Ok(std::string detail = "success");
-  static Status Error(std::string detail = "error");
+  static Status Ok(std::string detail = "success") { return Status(detail); }
+  static Status Error(std::string detail = "error") { return Status(detail); }
+
+private:
+  std::string m_detail;
 };
 
 class FileIterator {
@@ -25,14 +28,17 @@ public:
 
   ~FileIterator();
 
-  Status has_next();
+  bool has_next();
   std::string get_next();
   Status commit(Status status);
 
 private:
-  bool m_has_commited;
-  bool m_checked_next;
+  bool m_checked_has_next;
   bool m_has_next;
+
+  bool m_checked_get_next;
+  std::string m_next_body;
+  std::streampos m_end_pos;
 
   void restart_stream();
 
@@ -50,6 +56,8 @@ public:
   FileIterator& iterator();
 
   Status write(std::string transaction);
+
+  Status force_flush();
 
 private:
   int m_curr_buf_size;

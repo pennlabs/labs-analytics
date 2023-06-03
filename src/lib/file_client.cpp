@@ -1,7 +1,12 @@
 #include "file_client.hpp"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
+
+Status::Status(string detail) : m_detail(detail) {}
+
+string Status::detail() { return m_detail; }
 
 FileClient::FileClient() : m_curr_buf_size(0) {
   m_write_stream.open(WRITE_LOG);
@@ -12,8 +17,14 @@ FileClient::~FileClient() { m_write_stream.close(); }
 FileIterator& FileClient::iterator() { return m_iterator; }
 
 Status FileClient::write(string transaction) {
-  // TODO: write deliminter
-  int num_bytes = transaction.length();
+  if (transaction.length() == 0) {
+    return Status::Error("Empty transactions are not allowed.");
+  }
+
+  stringstream ss;
+  ss << DELIMITER << "\n" << transaction << "\n";
+
+  int num_bytes = ss.str().length();
 
   if (num_bytes > BUFSIZ) {
     return Status::Error("Transaction exceeds capacity.");
@@ -25,18 +36,24 @@ Status FileClient::write(string transaction) {
     m_curr_buf_size = 0;
   }
 
-  m_write_stream << transaction << "\n";
+  m_write_stream << ss.str();
   m_curr_buf_size += num_bytes;
 
   return Status::Ok();
 }
 
-FileIterator::FileIterator() : m_has_commited(true), m_checked_next(false) {
+Status FileClient::force_flush() {
+  m_write_stream.flush();
+  return Status::Ok();
+}
+
+FileIterator::FileIterator()
+    : m_checked_has_next(false), m_checked_get_next(false), m_next_body("") {
   // get last transaction id (position in the read file)
   ifstream error_log_reader(ERROR_LOG);
-  error_log_reader.seekg(-1, std::ios_base::end);
+  error_log_reader.seekg(-1, ios_base::end);
   if (error_log_reader.peek() == '\n') {
-    error_log_reader.seekg(-1, std::ios_base::cur);
+    error_log_reader.seekg(-1, ios_base::cur);
     for (int i = error_log_reader.tellg(); i > 0; i--) {
       if (error_log_reader.peek() == '\n') {
         // found beginning of last line
@@ -44,7 +61,7 @@ FileIterator::FileIterator() : m_has_commited(true), m_checked_next(false) {
         break;
       }
       // move backwards
-      error_log_reader.seekg(i, std::ios_base::beg);
+      error_log_reader.seekg(i, ios_base::beg);
     }
     error_log_reader >> m_next_transaction_id;
   } else {
@@ -67,57 +84,80 @@ void FileIterator::restart_stream() {
   m_read_stream.seekg(m_next_transaction_id);
 }
 
-std::string FileIterator::get_next() {
+string FileIterator::get_next() {
 
-  // has_next
+  // Return if there does not exist next
+  if ((m_checked_has_next && !m_has_next) || !this->has_next()) {
+    // TODO: Should throw useful error here
+    // Or even better, make a well structured Status class and return Status
+    // here
+    return "";
+  }
 
-  /*
-   ඞ\n
-   {
+  if (m_checked_get_next) {
+    return m_next_body;
+  }
 
-   }
-   ඞ\n
-   {
+  m_checked_get_next = true;
 
-   }
-   ඞ\n
-   {
+  stringstream ss;
+  string line;
 
-   }
-   ඞ\n
-   {
+  streampos pos = m_read_stream.tellg();
 
-   }
+  // Read the first delimiter
+  m_read_stream >> line;
 
-  */
+  streampos curr_pos;
+  // NOTE: This produces an extra whitespace for the last line.
+  // Hopefully when we move to JSON this shouldn't be a problem
+  while ((m_read_stream >> line) && line != DELIMITER) {
+    curr_pos = m_read_stream.tellg();
+    ss << line << "\n";
+  }
 
-  m_checked_next = false;
-  m_has_commited = false;
-  return "";
+  m_read_stream.seekg(pos, ios_base::beg);
+
+  m_end_pos = curr_pos;
+  m_next_body = ss.str();
+
+  return ss.str();
 }
 
-Status FileIterator::has_next() {
-  if (m_checked_next && m_has_next) {
-    return Status::Ok();
-  } else if (m_checked_next && !m_has_next) {
-    restart_stream();
-    return Status::Ok();
-  } else {
-    char tmp[2];
-    // TODO:
+bool FileIterator::has_next() {
 
-    // otherwise, move backwards
-    return Status::Ok();
+  if (m_checked_has_next) {
+    return m_has_next;
   }
+
+  m_checked_has_next = true;
+
+  string token;
+
+  streampos pos = m_read_stream.tellg();
+
+  if ((m_read_stream >> token) && token == DELIMITER) {
+    m_read_stream.seekg(pos, ios_base::beg);
+    m_has_next = true;
+    return true;
+  }
+
+  m_has_next = false;
+  return false;
 }
 
 Status FileIterator::commit(Status status) {
-  if (!m_has_commited) {
-    return Status::Error("Already commited for this transaction.");
+  if (!m_checked_get_next || this->get_next().length() == 0) {
+    return Status::Error("Nothing to Commit");
   }
-  m_has_commited = true;
-  m_next_transaction_id = m_read_stream.tellg();
-  m_commit_stream << m_next_transaction_id << " "
-                  << "error";
+
+  // TODO: Write to error log here
+
+  m_read_stream.seekg(m_end_pos, ios_base::beg);
+
+  // Invalidate cached data
+  m_checked_has_next = false;
+  m_checked_get_next = false;
+
   return Status::Ok();
 }
