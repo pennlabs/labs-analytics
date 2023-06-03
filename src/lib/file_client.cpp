@@ -4,6 +4,8 @@
 
 using namespace std;
 
+unsigned long m_next_transaction_id = 0;
+
 Status::Status(string detail) : m_detail(detail) {}
 
 string Status::detail() { return m_detail; }
@@ -63,9 +65,9 @@ FileIterator::FileIterator()
       // move backwards
       error_log_reader.seekg(i, ios_base::beg);
     }
-    error_log_reader >> m_next_transaction_id;
+    // error_log_reader >> m_next_transaction_id;
   } else {
-    m_next_transaction_id = 0;
+    // m_next_transaction_id = 0;
   }
   error_log_reader.close();
   m_read_stream.open(WRITE_LOG);
@@ -85,7 +87,6 @@ void FileIterator::restart_stream() {
 }
 
 string FileIterator::get_next() {
-
   // Return if there does not exist next
   if ((m_checked_has_next && !m_has_next) || !this->has_next()) {
     // TODO: Should throw useful error here
@@ -103,7 +104,7 @@ string FileIterator::get_next() {
   stringstream ss;
   string line;
 
-  streampos pos = m_read_stream.tellg();
+  m_start_pos = m_read_stream.tellg();
 
   // Read the first delimiter
   m_read_stream >> line;
@@ -116,7 +117,7 @@ string FileIterator::get_next() {
     ss << line << "\n";
   }
 
-  m_read_stream.seekg(pos, ios_base::beg);
+  m_read_stream.seekg(m_start_pos, ios_base::beg);
 
   m_end_pos = curr_pos;
   m_next_body = ss.str();
@@ -125,7 +126,6 @@ string FileIterator::get_next() {
 }
 
 bool FileIterator::has_next() {
-
   if (m_checked_has_next) {
     return m_has_next;
   }
@@ -134,9 +134,11 @@ bool FileIterator::has_next() {
 
   string token;
 
+  // Takes mark of current location
   streampos pos = m_read_stream.tellg();
 
   if ((m_read_stream >> token) && token == DELIMITER) {
+    // Returns to original location
     m_read_stream.seekg(pos, ios_base::beg);
     m_has_next = true;
     return true;
@@ -151,13 +153,26 @@ Status FileIterator::commit(Status status) {
     return Status::Error("Nothing to Commit");
   }
 
-  // TODO: Write to error log here
+  stringstream ss;
+  ss << m_start_pos << ": "
+     << " OK"
+     << "\n";
 
+  m_commit_stream << ss.str();
+
+  // We care more about lossless logging rather than performance for commits,
+  // so we will flush for every commit.
+  m_commit_stream.flush();
+
+  // Jumps to next item in iterator
   m_read_stream.seekg(m_end_pos, ios_base::beg);
 
   // Invalidate cached data
   m_checked_has_next = false;
   m_checked_get_next = false;
+
+  // Next transaction begins at the end of the previous transaction
+  m_next_transaction_id = m_end_pos;
 
   return Status::Ok();
 }

@@ -32,19 +32,20 @@ public:
   std::string get_next();
   Status commit(Status status);
 
+  // TODO: move this back to private
+  void restart_stream();
+
 private:
   bool m_checked_has_next;
   bool m_has_next;
 
   bool m_checked_get_next;
   std::string m_next_body;
+  std::streampos m_start_pos;
   std::streampos m_end_pos;
-
-  void restart_stream();
 
   std::ofstream m_commit_stream;
   std::ifstream m_read_stream;
-  unsigned long m_next_transaction_id;
 };
 
 class FileClient {
