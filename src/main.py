@@ -1,8 +1,6 @@
-import hashlib
-import os
-
-from aioredis import Redis
+import asyncio
 from fastapi import FastAPI, Request
+from redis.asyncio import Redis
 
 app = FastAPI()
 
@@ -15,16 +13,13 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    app.state.redis.close()
-    await app.state.redis.wait_closed()
+    await app.state.redis.close()
 
 @app.post("/analytics/")
 async def store_data(request: Request):
-    random_bytes = os.urandom(16)
-    body_bytes = await request.body()
-    hash_key = hashlib.sha256(random_bytes).hexdigest()[:16]
+    body = await request.json()
 
-    # Store the request body in Redis using the hash as the key
-    await app.state.redis.set(hash_key, body_bytes)
+    tasks = [app.state.redis.set(key, value) for key, value in body.items()]
+    await asyncio.gather(*tasks)
 
-    return {"message": "Data stored successfully in Redis", "key": hash_key}
+    return {"message": "Jobs submitted to Redis"}

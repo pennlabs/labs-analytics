@@ -8,7 +8,7 @@ fastapi = "*"
 pip = "*"
 install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
-aioredis = "*"
+redis = "*"
 
 [dev-packages]
 
