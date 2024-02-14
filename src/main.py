@@ -23,3 +23,5 @@ async def store_data(request: Request):
     await asyncio.gather(*tasks)
 
     return {"message": "Jobs submitted to Redis"}
+
+#  uvicorn main:app --reload

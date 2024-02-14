@@ -9,6 +9,7 @@ pip = "*"
 install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 redis = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
