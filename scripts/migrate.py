@@ -1,6 +1,7 @@
 import psycopg2
 from settings.config import DB_SETTINGS
 
+
 def instantiate():
     CREATE_COMMAND = """
     CREATE TABLE Event (
@@ -18,7 +19,8 @@ def instantiate():
                 cursor.execute(CREATE_COMMAND)
     except (psycopg2.DatabaseError, Exception) as error:
         print(f"Error: {error}")
- 
+
+
 if __name__ == "__main__":
     instantiate()
 
