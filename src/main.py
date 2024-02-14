@@ -1,6 +1,7 @@
 import asyncio
 from fastapi import FastAPI, Request
 from redis.asyncio import Redis
+from datetime import datetime
 
 app = FastAPI()
 
@@ -18,8 +19,8 @@ async def shutdown_event():
 @app.post("/analytics/")
 async def store_data(request: Request):
     body = await request.json()
-
-    tasks = [app.state.redis.set(key, value) for key, value in body.items()]
+    timestamp = datetime.now()
+    tasks = [app.state.redis.set(key, f"{value}::{timestamp}") for key, value in body.items()]
     await asyncio.gather(*tasks)
 
     return {"message": "Jobs submitted to Redis"}

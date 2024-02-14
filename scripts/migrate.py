@@ -6,7 +6,7 @@ def instantiate():
     CREATE TABLE Event (
         id SERIAL PRIMARY KEY,
         pennkey VARCHAR(50),
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        timestamp TIMESTAMP,
         event VARCHAR(256),
         data VARCHAR(256)
     );
@@ -21,3 +21,5 @@ def instantiate():
  
 if __name__ == "__main__":
     instantiate()
+
+# brew services start postgresql

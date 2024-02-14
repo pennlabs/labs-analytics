@@ -10,7 +10,7 @@ def random_digest():
 def send_request(url):
     """Function to send a single HTTP GET request to the specified URL."""
     try:
-        payload = {f"{random_digest()}": f"{random_digest()}"}
+        payload = {f"{random_digest()}::{random_digest()}": f"{random_digest()}"}
         response = requests.post(url, json=payload)
         return response.status_code
     except Exception as e:
