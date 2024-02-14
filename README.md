@@ -46,6 +46,66 @@ Here's where you can find the services:
 
 😎 Happy Hacking!
 
+### Development Guide
+
+The structure of this project is setup based on [FastAPI Best Practices](https://github.com/zhanymkanov/fastapi-best-practices). We will try to adhere to it as much as possible, here are the most important conventions to follow. PRs that violate these rules may not be merged.
+
+1. Excessively use `Pydantic` for data validation, validators stored in `schema.py`
+    - The consistency of the schema is of utmost importance since the analytics engine must accommodate all labs products
+    ```python
+        from datetime import datetime
+        from typing import Tuple
+
+        from pydantic import BaseModel
+
+
+        class Delivery(BaseModel):
+            timestamp: datetime
+            dimensions: Tuple[int, int]
+
+
+        m = Delivery(timestamp='2020-01-02T03:04:05Z', dimensions=['10', '20'])
+        print(repr(m.timestamp))
+        #> datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=TzInfo(UTC))
+        print(m.dimensions)
+        #> (10, 20)
+    ```
+2. Use `dependencies.py` to validate server side data
+    - `Pydantic` can only validate the values from client input. Use dependencies to validate data against database constraints like email already exists, user not found, etc.
+3. Migrations done through `Alembic`
+    - Migration file name template `*date*_*slug*.py`, e.g. `2022-08-24_post_content_idx.py`
+4. Follow the `REST`
+    - Follow the REST API framework for naming routes and endpoints
+5. Do not use `async` without `await`
+    ```python
+    #####################
+    ### GOOD EXAMPLES ###
+    #####################
+    @router.get("/thread-ping")
+    def good_ping():
+        time.sleep(10) # I/O blocking operation for 10 seconds, but in another thread
+        pong = service.get_pong()  # I/O blocking operation to get pong from DB, but in another thread
+        
+        return {"pong": pong}
+
+    @router.get("/async-ping")
+    async def ping():
+        await asyncio.sleep(10) # non-blocking I/O operation
+        pong = await service.async_get_pong()  # non-blocking I/O db call
+
+        return {"pong": pong}
+
+
+    #####################
+    #### BAD EXAMPLE ####
+    #####################
+    @router.get("/terrible-ping")
+    async def terrible_catastrophic_ping():
+        time.sleep(10) # I/O blocking operation for 10 seconds
+        pong = service.get_pong()  # I/O blocking operation to get pong from DB
+        
+        return {"pong": pong}
+    ```
 
 ## Motivation
 
@@ -77,8 +137,6 @@ Collecting this background data will provide many affordances for students. For 
 - [Future] Programmer interface to enable existing products to interact with the engine
     - Written in DLA as an `AnalyticsClient` class
 
-## Development
-
 ### Timeline
 Ideally, the project should be completed by the end of Spring 2024 in preperation for `Labs Wrapped`. Following this, further optimizations and functionality can be made in subsequent school semesters.
 
@@ -90,9 +148,13 @@ This project is specifically designed for performance and availability. As such,
 
 ### Project Members and Roles
 Justin Zhang
+
 Vincent Cai
+
 Jefferson Ding
+
 Jesse Zong
+
 ### Future Direction
 
 This project will be the first of its kind in the Labs suite that unifies analytics accross all products. It will serve as the model for future Labs products that are particularly sensitive to latency and throughput. 

@@ -1,22 +1,12 @@
 import hashlib
 import os
 
-from aioredis import Redis
 from fastapi import FastAPI, Request
+
+from src.redis import RedisData, delete_by_key, get_by_key, set_redis_key
 
 app = FastAPI()
 
-# Assuming Redis is running on localhost and default port, adjust as necessary
-REDIS_URL = "redis://localhost:6379"
-
-@app.on_event("startup")
-async def startup_event():
-    app.state.redis = await Redis.from_url(REDIS_URL)
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    app.state.redis.close()
-    await app.state.redis.wait_closed()
 
 @app.post("/analytics/")
 async def store_data(request: Request):
@@ -24,7 +14,10 @@ async def store_data(request: Request):
     body_bytes = await request.body()
     hash_key = hashlib.sha256(random_bytes).hexdigest()[:16]
 
+    # Create a RedisData instance with the request body and a 5 minute TTL
+    RedisD = RedisData(key=hash_key, value=body_bytes, ttl=300)
+
     # Store the request body in Redis using the hash as the key
-    await app.state.redis.set(hash_key, body_bytes)
+    await set_redis_key(RedisD)
 
     return {"message": "Data stored successfully in Redis", "key": hash_key}

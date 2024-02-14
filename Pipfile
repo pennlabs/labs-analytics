@@ -8,7 +8,10 @@ fastapi = "*"
 pip = "*"
 install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
-aioredis = "*"
+pydantic = "*"
+pydantic-settings = "*"
+sqlalchemy = "*"
+redis = "*"
 
 [dev-packages]
 isort = "*"
@@ -19,6 +22,8 @@ black = "*"
 python_version = "3.10"
 
 [scripts]
-setup = "docker-compose up -d"
-lint = "isort . && black --line-length 79 --check . && flake8 ."
-start = "uvicorn main:app --reload"
+docker= "docker-compose up -d"
+lint = "./scripts/lint"
+start = "uvicorn src.main:app --reload"
+migrate= "alembic upgrade head"
+test = "pytest"
