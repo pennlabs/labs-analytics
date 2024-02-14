@@ -1,30 +1,35 @@
-import hashlib
-import os
+import asyncio
+from datetime import datetime
 
-from aioredis import Redis
 from fastapi import FastAPI, Request
+from redis.asyncio import Redis
 
 app = FastAPI()
 
 # Assuming Redis is running on localhost and default port, adjust as necessary
 REDIS_URL = "redis://localhost:6379"
 
+
 @app.on_event("startup")
 async def startup_event():
     app.state.redis = await Redis.from_url(REDIS_URL)
 
+
 @app.on_event("shutdown")
 async def shutdown_event():
-    app.state.redis.close()
-    await app.state.redis.wait_closed()
+    await app.state.redis.close()
+
 
 @app.post("/analytics/")
 async def store_data(request: Request):
-    random_bytes = os.urandom(16)
-    body_bytes = await request.body()
-    hash_key = hashlib.sha256(random_bytes).hexdigest()[:16]
+    body = await request.json()
+    timestamp = datetime.now()
+    tasks = [
+        app.state.redis.set(key, f"{value}::{timestamp}") for key, value in body.items()
+    ]
+    await asyncio.gather(*tasks)
 
-    # Store the request body in Redis using the hash as the key
-    await app.state.redis.set(hash_key, body_bytes)
+    return {"message": "Jobs submitted to Redis"}
 
-    return {"message": "Data stored successfully in Redis", "key": hash_key}
+
+#  uvicorn main:app --reload
