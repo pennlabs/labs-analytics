@@ -1,35 +1,8 @@
 # Labs Analytics Engine
 
-Labs Analytics Engine is an unified **asynchronous analytics engine** to track, monitor and store live analytics data accross all Penn Labs products. 
+Labs Analytics Engine is an unified **asynchronous analytics engine** to track, monitor and store live analytics data across all Penn Labs products. 
 
 ## Getting Started
-
-### Setting up a local `Redis` 
-
-This guide details the steps to set up a Redis instance inside a Docker container, making it easy for development. Docker must be installed on your system to proceed.
-
-
-> [!NOTE]  
-> Docker installed on your system. If Docker is not installed, please follow the installation guide at [Docker's official documentation](https://docs.docker.com/get-docker/).
-
-
-1. First, pull the latest official `Redis` image from Docker Hub:
-
-```bash
-docker pull redis
-```
-2. Launch the `Redis` instance by running
-```bash
-docker run --name analytics-redis -p 6379:6379 -d redis
-```
-3. You can verify the instance is running by
-```bash
-docker ps
-```
-4. To stop the instance, run
-```bash
-docker stop analytics-redis
-```
 
 ### Dev Environment Setup
 
@@ -45,11 +18,33 @@ git clone git@github.com:pennlabs/labs-analytics.git
 ```bash
 pipenv install
 ```
-4. Change into the source file directory and start the engine using `uvicorn`
+
+### Setting up for local development
+
+This guide details the steps to set up `Redis`, `Redis Insight`, `postgres` and `pgweb` instances using Docker, making it easy for development. 
+
+> [!NOTE]  
+> Docker installed on your system. If Docker and Docker Compose is not installed, please follow the installation guide at [Docker's official documentation](https://docs.docker.com/get-docker/).
+
+Run all the services by:
 ```bash
-uvicorn main:app --reload
+pipenv run docker
 ```
-5. 😎 Happy Hacking!
+or alternatively:
+```bash
+docker-compose up -d
+```
+
+Here's where you can find the services:
+1. `postgres` can be found on it's default port `5432` with
+    - username: `labs`
+    - password: `analytics`
+    - db: `lab-analytics`
+2. `pgweb` is a web GUI to visualize the database, it can be accessed at `http://localhost:8002`
+3. `redis` is exposed at it's default port `6379`
+4. `Redis Insight` is the web GUI to visualize `redis`, it can be found at `http://localhost:8001`
+
+😎 Happy Hacking!
 
 
 ## Motivation
