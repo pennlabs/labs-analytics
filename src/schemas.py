@@ -1,21 +1,62 @@
+from datetime import datetime
 from enum import Enum
+from typing import Optional
 
-from pydantic import BaseModel, Field
-
-from models import CustomModel
-
-
-class Product(str, Enum):
-    MOBILE_IOS = "MOBILE_IOS"
-    MOBILE_ANDROID = "MOBILE_ANDROID"
-    MOBILE_BACKEND = "MOBILE_BACKEND"
-    PORTAL = "PORTAL"
-    PCR = "PCR"
-    PDP = "PDP"
-    PCA = "PCA"
-    PCP = "PCP"
-    OHQ = "OHQ"
-    CLUBS = "CLUBS"
+from src.models import CustomModel
 
 
-# class DataPoints(CustomModel):
+class Product(Enum):
+    OTHER = 0
+    MOBILE_IOS = 1
+    MOBILE_ANDROID = 2
+    MOBILE_BACKEND = 3
+    PORTAL = 4
+    PCR = 5
+    PDP = 6
+    PCA = 7
+    PCP = 8
+    OHQ = 9
+    CLUBS = 10
+
+    def __str__(self):
+        return self.name
+
+
+class RedisEvent(CustomModel):
+    key: bytes | str
+    value: bytes | str
+
+
+class AnalyticsTxn(CustomModel):
+    product: Product
+    pennkey: Optional[str] = None
+    timestamp: datetime
+    data: list[RedisEvent]
+
+    # init with JSON data
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.timestamp = datetime.fromtimestamp(data["timestamp"])
+        self.data = [RedisEvent(**event) for event in data["data"]]
+        self.product = Product(data["product"])
+        self.pennkey = data.get("pennkey")
+
+    def get_redis_key(self):
+        return f"{self.product}.{self.hash_as_key()}"
+
+    def build_redis_data(self) -> list[RedisEvent]:
+        return [
+            RedisEvent(
+                key=f"{self.get_redis_key()}.{event.hash_as_key()}",
+                value=str(
+                    {
+                        "product": str(self.product),
+                        "pennkey": self.pennkey,
+                        "timestamp": self.timestamp.timestamp(),
+                        "datapoint": event.key,
+                        "value": event.value,
+                    }
+                ),
+            )
+            for event in self.data
+        ]

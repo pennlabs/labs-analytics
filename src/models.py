@@ -1,9 +1,7 @@
-from datetime import datetime
-from typing import Any
-from zoneinfo import ZoneInfo
+import hashlib
 
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict
 
 
 class CustomModel(BaseModel):
@@ -12,7 +10,11 @@ class CustomModel(BaseModel):
     )
 
     def serializable_dict(self, **kwargs):
-        """Return a dict which contains only serializable fields."""
         default_dict = self.model_dump()
-
         return jsonable_encoder(default_dict)
+
+    def __str__(self):
+        return str(self.serializable_dict())
+
+    def hash_as_key(self):
+        return hashlib.md5(str(self).encode()).hexdigest()[0:8]
