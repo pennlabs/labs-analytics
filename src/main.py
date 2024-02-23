@@ -13,5 +13,5 @@ async def store_data(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    await set_redis_from_tx(txn)n
+    await set_redis_from_tx(txn)
     return {"message": "Data stored successfully!"}
