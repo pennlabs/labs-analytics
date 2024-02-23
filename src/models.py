@@ -17,4 +17,4 @@ class CustomModel(BaseModel):
         return str(self.serializable_dict())
 
     def hash_as_key(self):
-        return hashlib.md5(str(self).encode()).hexdigest()[0:8]
+        return hashlib.md5(str(self).encode()).hexdigest()[0:16]
