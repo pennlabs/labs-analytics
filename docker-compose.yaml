@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: lab-analytics
+      POSTGRES_PASSWORD: analytics
+      POSTGRES_USER: labs
+    ports:
+      - 5432:5432
+    restart: on-failure:3
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  pgweb:
+    image: sosedoff/pgweb
+    depends_on:
+      - postgres
+    environment:
+      PGWEB_DATABASE_URL: postgres://labs:analytics@postgres:5432/lab-analytics?sslmode=disable
+    ports:
+      - 8002:8081
+    restart: on-failure:3
+
+  redis-stack:
+    image: redis/redis-stack:latest
+    ports:
+      - 6379:6379
+      - 8001:8001
+    volumes:
+      - redis:/data
+    networks:
+      - redis-network
+
+volumes:
+  redis:
+  redis-config:
+  postgres:
+
+networks:
+  redis-network:
+    driver: bridge

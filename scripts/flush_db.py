@@ -20,13 +20,13 @@ def batch_insert(events):
     except (psycopg2.DatabaseError, Exception) as error:
         print(f"Error: {error}")
 
-
 async def main():
     redis = await Redis.from_url(REDIS_URL)
 
     items = redis.scan_iter(count=REDIS_BATCH_SIZE)
-
+    
     events = list()
+    
     # Async operation to perform Redis retrieval and computation in parallel
     async for key in items:
         try:

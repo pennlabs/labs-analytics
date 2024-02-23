@@ -1,35 +1,17 @@
-import asyncio
-from datetime import datetime
+from fastapi import FastAPI, HTTPException, Request
 
-from fastapi import FastAPI, Request
-from redis.asyncio import Redis
+from src.redis import set_redis_from_tx
+from src.schemas import AnalyticsTxn
 
 app = FastAPI()
 
-# Assuming Redis is running on localhost and default port, adjust as necessary
-REDIS_URL = "redis://localhost:6379"
-
-
-@app.on_event("startup")
-async def startup_event():
-    app.state.redis = await Redis.from_url(REDIS_URL)
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    await app.state.redis.close()
-
-
 @app.post("/analytics/")
 async def store_data(request: Request):
-    body = await request.json()
-    timestamp = datetime.now()
-    tasks = [
-        app.state.redis.set(key, f"{value}::{timestamp}") for key, value in body.items()
-    ]
-    await asyncio.gather(*tasks)
+    try:
+        body = await request.json()
+        txn = AnalyticsTxn(**body)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    return {"message": "Jobs submitted to Redis"}
-
-
-#  uvicorn main:app --reload
+    await set_redis_from_tx(txn)n
+    return {"message": "Data stored successfully!"}
