@@ -12,6 +12,7 @@ pydantic = "*"
 pydantic-settings = "*"
 sqlalchemy = "*"
 redis = "*"
+psycopg2 = "*"
 
 [dev-packages]
 isort = "*"
