@@ -1,30 +1,13 @@
 from datetime import datetime
-from enum import Enum
 from typing import Optional
 
-from src.models import CustomModel
+from src.models import CustomModel, Product, RedisEvent
 
 
-class Product(Enum):
-    OTHER = 0
-    MOBILE_IOS = 1
-    MOBILE_ANDROID = 2
-    MOBILE_BACKEND = 3
-    PORTAL = 4
-    PCR = 5
-    PDP = 6
-    PCA = 7
-    PCP = 8
-    OHQ = 9
-    CLUBS = 10
-
-    def __str__(self):
-        return self.name
-
-
-class RedisEvent(CustomModel):
-    key: bytes | str
-    value: bytes | str
+class AuthRequest:
+    client_id: str
+    secret: str
+    product: Product = Product.OTHER
 
 
 class AnalyticsTxn(CustomModel):

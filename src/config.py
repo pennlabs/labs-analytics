@@ -1,6 +1,4 @@
-from typing import Any
-
-from pydantic import PostgresDsn, RedisDsn, model_validator
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
 
 from src.constants import Environment
@@ -9,6 +7,10 @@ from src.constants import Environment
 class Config(BaseSettings):
     DATABASE_URL: PostgresDsn
     REDIS_URL: RedisDsn
+
+    JWT_ALG: str
+    JWT_EXP: int
+    JWT_SECRET: str
 
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 
@@ -22,13 +24,3 @@ class Config(BaseSettings):
 
 
 settings = Config()
-
-app_configs: dict[str, Any] = {
-    "title": "Labs Analytics API",
-    "root_path": "",
-}
-if settings.ENVIRONMENT.is_deployed:
-    app_configs["root_path"] = f"/v{settings.APP_VERSION}"
-
-if not settings.ENVIRONMENT.is_debug:
-    app_configs["openapi_url"] = None  # hide docs

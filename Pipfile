@@ -13,6 +13,9 @@ pydantic-settings = "*"
 sqlalchemy = "*"
 redis = "*"
 psycopg2 = "*"
+jose = "*"
+python-jose = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 isort = "*"
