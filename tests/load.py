@@ -1,34 +1,40 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import os
-import hashlib
+import json
+import random
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
 import requests
 
-def random_digest():
-    return hashlib.sha256(os.urandom(16)).hexdigest()[:16]
 
-def send_request(url):
-    """Function to send a single HTTP GET request to the specified URL."""
-    try:
-        payload = {f"{random_digest()}": f"{random_digest()}"}
-        response = requests.post(url, json=payload)
-        return response.status_code
-    except Exception as e:
-        return str(e)
+def make_request():
+    url = "http://localhost:8000/analytics"
+    payload = json.dumps({
+        "product": random.randint(1,10),
+        "pennkey": "test_usr",
+        "timestamp": int(datetime.now().timestamp()),
+        "data": [
+            {"key": "user.click", "value": str(random.randint(1, 1000))},
+            {"key": "user.drag", "value": str(random.randint(1, 1000))},
+            {"key": "data.dowload", "value": str(random.randint(1, 1000))},
+            {"key": "user.drive", "value": str(random.randint(1, 1000))},
+            {"key": "user.play", "value": str(random.randint(1, 1000))},
+            {"key": "user.sit", "value": str(random.randint(1, 1000))},
+            {"key": "user.stand", "value": str(random.randint(1, 1000))},
+            {"key": "user.bike", "value": str(random.randint(1, 1000))},
+            {"key": "user.flip", "value": str(random.randint(1, 1000))},
+            {"key": "food.eat", "value": str(random.randint(1, 1000))},
+        ]
+    })
+    headers = {
+        'Content-Type': 'application/json',
+    }
 
-def main(url, num_requests):
-    """Function to send multiple requests to the specified URL using multithreading."""
-    with ThreadPoolExecutor(max_workers=1000) as executor:
-        # Create a list to hold the futures.
-        futures = [executor.submit(send_request, url) for _ in range(num_requests)]
-        
-        # Process the results as they are completed.
-        for future in as_completed(futures):
-            response = future.result()
-            print(response)
+    response = requests.request("POST", url, headers=headers, data=payload)
+    return response.text
 
-if __name__ == "__main__":
-    test_url = "http://localhost:8000/analytics"  # Replace with your target URL
-    total_requests = 9998  # Total number of requests to send
-
-    main(test_url, total_requests)
+# Adjust the number of workers based on your needs and system capabilities
+number_of_requests = 500000  # Number of simultaneous requests you want to make
+with ThreadPoolExecutor(max_workers=16) as executor:
+    futures = [executor.submit(make_request) for _ in range(number_of_requests)]
+    for future in futures:
+        print(future.result())
