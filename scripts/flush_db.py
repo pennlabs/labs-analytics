@@ -1,23 +1,24 @@
 import asyncio
+import json
 from datetime import datetime
 
-import psycopg2
-from redis.asyncio import Redis
+import asyncpg
 from settings.config import DB_SETTINGS, REDIS_BATCH_SIZE, REDIS_URL
 
+from redis.asyncio import Redis
 
-def batch_insert(events):
+
+async def batch_insert(events):
     # TODO: Ensure number of events does not exceed SQL max statement tokens
     BATCH_INSERT_COMMAND = """
-        INSERT INTO Event (pennkey, event, data, timestamp)
-        VALUES (%s, %s, %s, %s);
-    """
+        INSERT INTO event (product, pennkey, datapoint, value, timestamp)
+        VALUES ($1, $2, $3, $4, $5)
+        """
 
     try:
-        with psycopg2.connect(**DB_SETTINGS) as conn:
-            with conn.cursor() as cursor:
-                cursor.executemany(BATCH_INSERT_COMMAND, events)
-    except (psycopg2.DatabaseError, Exception) as error:
+        conn = await asyncpg.connect(**DB_SETTINGS)
+        await conn.executemany(BATCH_INSERT_COMMAND, events)
+    except Exception as error:
         print(f"Error: {error}")
 
 async def main():
@@ -26,23 +27,33 @@ async def main():
     items = redis.scan_iter(count=REDIS_BATCH_SIZE)
     
     events = list()
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> origin/master
     # Async operation to perform Redis retrieval and computation in parallel
     async for key in items:
         try:
-            pennkey, event = key.decode("utf-8").split("::")
             data_bytes = await redis.get(key)
-            data, timestamp_str = data_bytes.decode("utf-8").split("::")
-            timestamp = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S.%f")
-        except ValueError:
+            data = json.loads(data_bytes.decode("utf-8"))
+        except ValueError as e:
+            print(e)
             print("flush_db: invalid key")
             continue
 
-        events.append((pennkey, event, data, timestamp))
+        events.append(
+            (
+                data["product"],
+                data["pennkey"],
+                data["datapoint"],
+                data["value"],
+                datetime.fromtimestamp(data["timestamp"]),
+            )
+        )
 
-    batch_insert(events)
+    await batch_insert(events)
 
-    # Clear cache upon successful data flush
     await redis.flushall()
 
 

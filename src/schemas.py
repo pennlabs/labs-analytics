@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+import json
 
 from src.models import CustomModel, Product, RedisEvent
 
@@ -31,7 +32,7 @@ class AnalyticsTxn(CustomModel):
         return [
             RedisEvent(
                 key=f"{self.get_redis_key()}.{event.hash_as_key()}",
-                value=str(
+                value=json.dumps(
                     {
                         "product": str(self.product),
                         "pennkey": self.pennkey,

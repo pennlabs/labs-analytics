@@ -10,12 +10,9 @@ install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
 pydantic-settings = "*"
-sqlalchemy = "*"
+sqlalchemy = {extras = ["asyncio"], version = "*"}
 redis = "*"
-psycopg2 = "*"
-jose = "*"
-python-jose = "*"
-passlib = {extras = ["bcrypt"], version = "*"}
+asyncpg = "*"
 
 [dev-packages]
 isort = "*"
