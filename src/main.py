@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 
-from src.redis import set_redis_from_tx
-from src.schemas import AnalyticsTxn
+from .redis import set_redis_from_tx
+from .schemas import AnalyticsTxn
 
 app = FastAPI()
 

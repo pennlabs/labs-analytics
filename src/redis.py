@@ -1,8 +1,8 @@
 from typing import Optional
 
 from redis.asyncio import Redis
-from src.config import settings
-from src.schemas import AnalyticsTxn, RedisEvent
+from .config import settings
+from .schemas import AnalyticsTxn, RedisEvent
 
 redis_client: Redis = Redis.from_url(str(settings.REDIS_URL))
 

@@ -10,9 +10,9 @@ install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
 pydantic-settings = "*"
-sqlalchemy = "*"
+sqlalchemy = {extras = ["asyncio"], version = "*"}
 redis = "*"
-psycopg2 = "*"
+asyncpg = "*"
 
 [dev-packages]
 isort = "*"
