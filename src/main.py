@@ -5,6 +5,7 @@ from .schemas import AnalyticsTxn
 
 app = FastAPI()
 
+
 @app.post("/analytics/")
 async def store_data(request: Request):
     try:
