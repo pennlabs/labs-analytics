@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import PostgresDsn, RedisDsn, model_validator
 from pydantic_settings import BaseSettings
 
-from src.constants import Environment
+from .constants import Environment
 
 
 class Config(BaseSettings):

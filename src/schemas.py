@@ -1,8 +1,9 @@
+import json
 from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from src.models import CustomModel
+from .models import CustomModel
 
 
 class Product(Enum):
@@ -48,7 +49,7 @@ class AnalyticsTxn(CustomModel):
         return [
             RedisEvent(
                 key=f"{self.get_redis_key()}.{event.hash_as_key()}",
-                value=str(
+                value=json.dumps(
                     {
                         "product": str(self.product),
                         "pennkey": self.pennkey,
