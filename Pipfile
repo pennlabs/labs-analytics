@@ -14,6 +14,8 @@ sqlalchemy = {extras = ["asyncio"], version = "*"}
 redis = "*"
 asyncpg = "*"
 python-jose = "*"
+requests = "*"
+passlib = "*"
 
 [dev-packages]
 isort = "*"
