@@ -1,6 +1,7 @@
 import asyncio
 from typing import Any
 
+from settings.config import DATABASE_URL
 from sqlalchemy import (
     Boolean,
     Column,
@@ -22,12 +23,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.config import settings
-from src.models import Client
-
-DATABASE_URL = str(settings.DATABASE_URL)
-
-engine = create_async_engine(DATABASE_URL)
+engine = create_async_engine(str(DATABASE_URL))
 
 metadata = MetaData()
 
@@ -47,10 +43,6 @@ event = Table(
 async def create_tables():
     async with engine.begin() as conn:
         await conn.run_sync(metadata.create_all)
-
-
-async def get_client(client: Client):
-    return client
 
 
 if __name__ == "__main__":
