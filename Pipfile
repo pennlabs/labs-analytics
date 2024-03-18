@@ -16,6 +16,8 @@ asyncpg = "*"
 python-jose = "*"
 requests = "*"
 passlib = "*"
+jwcrypto = "*"
+pytest = "*"
 
 [dev-packages]
 isort = "*"

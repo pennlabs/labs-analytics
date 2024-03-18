@@ -14,6 +14,9 @@ class Config(BaseSettings):
     JWT_EXP: int
     JWT_SECRET: str
 
+    JWKS_CACHE: str = ""
+    JWKS_URL: str
+
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 
     ENVIRONMENT: Environment = Environment.PRODUCTION
