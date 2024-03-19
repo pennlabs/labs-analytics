@@ -37,7 +37,7 @@ export class MyChart extends PennLabsChart {
       ingress: {
         rules: [{
           host: domain,
-          paths: ["/api"], // TODO: add paths here
+          paths: ["/analytics"], // TODO: add paths here
           isSubdomain: true,
         }],
         ...ingressProps,

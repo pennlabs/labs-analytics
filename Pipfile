@@ -13,6 +13,7 @@ pydantic-settings = "*"
 sqlalchemy = {extras = ["asyncio"], version = "*"}
 redis = "*"
 asyncpg = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 isort = "*"

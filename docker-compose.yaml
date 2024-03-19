@@ -4,10 +4,14 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: uvicorn main:app --host 0.0.0.0 --port 80
+      dockerfile: ./Dockerfile
+    command: uvicorn src.main:app --host 0.0.0.0 --port 80
     ports:
       - "80:80"
+    environment:
+      - PYTHONPATH=.
+      - DATABASE_URL=postgres://labs:analytics@postgres:5432/lab-analytics?sslmode=disable
+      - REDIS_URL=redis://redis-stack:6379/0
     depends_on:
       - redis_stack
   

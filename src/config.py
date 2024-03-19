@@ -14,9 +14,9 @@ class Config(BaseSettings):
 
     ENVIRONMENT: Environment = Environment.PRODUCTION
 
-    CORS_ORIGINS: list[str]
+    CORS_ORIGINS: list[str] = ["*"]
     CORS_ORIGINS_REGEX: str | None = None
-    CORS_HEADERS: list[str]
+    CORS_HEADERS: list[str] = ["*"]
 
     APP_VERSION: str = "1"
 
