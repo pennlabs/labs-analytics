@@ -17,3 +17,6 @@ dump.rdb
 /.project
 /.settings
 /.vscode/
+
+# Ignore .env files
+.env

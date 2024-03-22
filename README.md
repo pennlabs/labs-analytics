@@ -28,7 +28,7 @@ pipenv install
 
 This guide details the steps to set up `Redis`, `Redis Insight`, `postgres` and `pgweb` instances using Docker, making it easy for development.
 
-> [NOTE]  
+> [!NOTE]  
 > Docker installed on your system. If Docker and Docker Compose is not installed, please follow the installation guide at [Docker's official documentation](https://docs.docker.com/get-docker/).
 
 Run all the services by:
@@ -52,8 +52,6 @@ After ensuring that your .env file is properly configured, you can create the lo
 ```bash
 pipenv run python src/database.py
 ```
-
-😎 Happy Hacking!
 
 ### Development Guide
 

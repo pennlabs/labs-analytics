@@ -1,13 +1,14 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 
-from .redis import set_redis_from_tx
-from .schemas import AnalyticsTxn
+from src.auth import verify_jwt
+from src.redis import set_redis_from_tx
+from src.schemas import AnalyticsTxn
 
 app = FastAPI()
 
 
 @app.post("/analytics/")
-async def store_data(request: Request):
+async def store_data(request: Request, token: dict = Depends(verify_jwt)):
     try:
         body = await request.json()
         txn = AnalyticsTxn(**body)
