@@ -28,11 +28,7 @@ pipenv install
 
 This guide details the steps to set up `Redis`, `Redis Insight`, `postgres` and `pgweb` instances using Docker, making it easy for development.
 
-<<<<<<< HEAD
 > [!NOTE]  
-=======
-> [NOTE]  
->>>>>>> origin/master
 > Docker installed on your system. If Docker and Docker Compose is not installed, please follow the installation guide at [Docker's official documentation](https://docs.docker.com/get-docker/).
 
 Run all the services by:
@@ -51,16 +47,11 @@ Here's where you can find the services:
 3. `redis` is exposed at it's default port `6379`
 4. `Redis Insight` is the web GUI to visualize `redis`, it can be found at `http://localhost:8001`
 
-<<<<<<< HEAD
-=======
 After ensuring that your .env file is properly configured, you can create the local database by running the following command:
 
 ```bash
 pipenv run python src/database.py
 ```
-
->>>>>>> origin/master
-😎 Happy Hacking!
 
 ### Development Guide
 

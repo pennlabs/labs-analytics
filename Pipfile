@@ -13,7 +13,6 @@ pydantic-settings = "*"
 sqlalchemy = {extras = ["asyncio"], version = "*"}
 redis = "*"
 asyncpg = "*"
-python-jose = "*"
 requests = "*"
 passlib = "*"
 jwcrypto = "*"

@@ -17,7 +17,3 @@ async def store_data(request: Request, token: dict = Depends(verify_jwt)):
 
     await set_redis_from_tx(txn)
     return {"message": "Data stored successfully!"}
-
-@app.post("/test/")
-async def test(request: Request, token: dict = Depends(verify_jwt)):
-    return token;

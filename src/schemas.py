@@ -1,14 +1,8 @@
+import json
 from datetime import datetime
 from typing import Optional
-import json
 
 from src.models import CustomModel, Product, RedisEvent
-
-
-class AuthRequest:
-    client_id: str
-    secret: str
-    product: Product = Product.OTHER
 
 
 class AnalyticsTxn(CustomModel):

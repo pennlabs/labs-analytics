@@ -7,21 +7,21 @@ from src.config import settings
 # The URL to the JWKS endpoint
 JWKS_URL = settings.JWKS_URL
 
+
 def get_jwk():
     if settings.JWKS_CACHE:
-        key = jwk.json_decode(settings.JWKS_CACHE).get("keys")[0]
-        return jwk.JWK(**key) 
+        key = settings.JWKS_CACHE
+        return key
 
     # Make a request to get the JWKS
-    jwks = ""
     try:
-        jwks = requests.get(JWKS_URL).text
-        settings.JWK_CACHE = jwk.json_encode(jwks)
-    except:
-        settings.JWKS_CACHE = ""
-    # Assuming there's only one key in the set
-    key = jwk.json_decode(jwks).get("keys")[0]
-    return jwk.JWK(**key)
+        response = requests.get(JWKS_URL)
+        jwks = jwk.JWKSet.from_json(response.text)
+        settings.JWKS_CACHE = jwks
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return settings.JWKS_CACHE
 
 
 def get_token_from_header(request: Request):

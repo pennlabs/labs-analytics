@@ -12,6 +12,3 @@ DB_SETTINGS = {
 }
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-
-if __name__ == "__main__":
-    print(DATABASE_URL)
