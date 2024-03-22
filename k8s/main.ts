@@ -31,13 +31,12 @@ export class MyChart extends PennLabsChart {
         image: backendImage,
         secret,
         replicas: 1,
-        // TODO: check fastapi env variables
         env: [],
       },
       ingress: {
         rules: [{
           host: domain,
-          paths: ["/analytics"], // TODO: add paths here
+          paths: ["/analytics"],
           isSubdomain: true,
         }],
         ...ingressProps,
