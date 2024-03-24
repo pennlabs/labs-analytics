@@ -11,10 +11,10 @@ services:
     environment:
       - PYTHONPATH=.
       - DATABASE_URL=postgres://labs:analytics@postgres:5432/lab-analytics?sslmode=disable
-      - REDIS_URL=redis://redis-stack:6379/0
+      - REDIS_URL=redis://redis_stack:6379/0
     depends_on:
       - redis_stack
-  
+
   postgres:
     image: postgres:alpine
     environment:
@@ -44,13 +44,7 @@ services:
       - 8001:8001
     volumes:
       - redis:/data
-    networks:
-      - redis_network
 
 volumes:
   redis:
   postgres:
-
-networks:
-  redis_network:
-    driver: bridge
