@@ -14,8 +14,6 @@ services:
       - REDIS_URL=redis://redis_stack:6379/0
     depends_on:
       - redis_stack
-    networks:
-      - app-network
 
   postgres:
     image: postgres:alpine
@@ -28,8 +26,6 @@ services:
     restart: on-failure:3
     volumes:
       - postgres:/var/lib/postgresql/data
-    networks:
-      - app-network
 
   pgweb:
     image: sosedoff/pgweb:0.15.0
@@ -40,8 +36,6 @@ services:
     ports:
       - 8002:8081
     restart: on-failure:3
-    networks:
-      - app-network
 
   redis_stack:
     image: redis/redis-stack:6.2.6-v6
@@ -50,12 +44,6 @@ services:
       - 8001:8001
     volumes:
       - redis:/data
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
 
 volumes:
   redis:
