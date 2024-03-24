@@ -1,7 +1,7 @@
 from typing import Any
 
 from jwcrypto.jwk import JWKSet
-from pydantic import PostgresDsn, RedisDsn, model_validator
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
 
 from src.constants import Environment
@@ -12,7 +12,7 @@ class Config(BaseSettings):
     REDIS_URL: RedisDsn
 
     JWKS_CACHE: JWKSet | None = None
-    JWKS_URL: str
+    JWKS_URL: str = "https://platform.pennlabs.org/identity/jwks/"
 
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 

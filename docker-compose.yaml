@@ -11,10 +11,12 @@ services:
     environment:
       - PYTHONPATH=.
       - DATABASE_URL=postgres://labs:analytics@postgres:5432/lab-analytics?sslmode=disable
-      - REDIS_URL=redis://redis-stack:6379/0
+      - REDIS_URL=redis://redis_stack:6379/0
     depends_on:
       - redis_stack
-  
+    networks:
+      - app-network
+
   postgres:
     image: postgres:alpine
     environment:
@@ -26,6 +28,8 @@ services:
     restart: on-failure:3
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   pgweb:
     image: sosedoff/pgweb:0.15.0
@@ -36,6 +40,8 @@ services:
     ports:
       - 8002:8081
     restart: on-failure:3
+    networks:
+      - app-network
 
   redis_stack:
     image: redis/redis-stack:6.2.6-v6
@@ -45,12 +51,12 @@ services:
     volumes:
       - redis:/data
     networks:
-      - redis_network
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   redis:
   postgres:
-
-networks:
-  redis_network:
-    driver: bridge

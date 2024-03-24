@@ -7,6 +7,7 @@ from src.auth import verify_jwt
 
 ATTEST_URL = "https://platform.pennlabs.org/identity/attest/"
 
+# Using Penn Basics DLA Account for testing, will not work if you don't have that in .env
 CLIENT_ID: str = os.environ.get("CLIENT_ID") or ""
 CLIENT_SECRET: str = os.environ.get("CLIENT_SECRET") or ""
 
