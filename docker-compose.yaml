@@ -1,6 +1,20 @@
-version: '3.8'
+version: "3.11"
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: uvicorn src.main:app --host 0.0.0.0 --port 80
+    ports:
+      - "80:80"
+    environment:
+      - PYTHONPATH=.
+      - DATABASE_URL=postgres://labs:analytics@postgres:5432/lab-analytics?sslmode=disable
+      - REDIS_URL=redis://redis_stack:6379/0
+    depends_on:
+      - redis_stack
+
   postgres:
     image: postgres:alpine
     environment:
@@ -14,7 +28,7 @@ services:
       - postgres:/var/lib/postgresql/data
 
   pgweb:
-    image: sosedoff/pgweb
+    image: sosedoff/pgweb:0.15.0
     depends_on:
       - postgres
     environment:
@@ -23,21 +37,14 @@ services:
       - 8002:8081
     restart: on-failure:3
 
-  redis-stack:
-    image: redis/redis-stack:latest
+  redis_stack:
+    image: redis/redis-stack:6.2.6-v6
     ports:
       - 6379:6379
       - 8001:8001
     volumes:
       - redis:/data
-    networks:
-      - redis-network
 
 volumes:
   redis:
-  redis-config:
   postgres:
-
-networks:
-  redis-network:
-    driver: bridge

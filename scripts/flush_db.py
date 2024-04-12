@@ -3,6 +3,9 @@ import json
 from datetime import datetime
 
 import asyncpg
+from redis.asyncio import Redis
+
+
 from settings.config import DB_SETTINGS, REDIS_BATCH_SIZE, REDIS_URL
 
 from redis.asyncio import Redis
@@ -25,7 +28,7 @@ async def batch_insert(events):
 
 
 async def main():
-    redis = await Redis.from_url(REDIS_URL)
+    redis = await Redis.from_url(str(REDIS_URL))
 
     items = redis.scan_iter(count=REDIS_BATCH_SIZE)
 
@@ -35,7 +38,9 @@ async def main():
     async for key in items:
         try:
             data_bytes = await redis.get(key)
-            data = json.loads(data_bytes.decode("utf-8"))
+            data = data_bytes.decode("utf-8").replace("'", '"')
+            json_string = json.dumps(data)
+            data = json.loads(json.loads(json_string))
         except ValueError as e:
             print(e)
             print("flush_db: invalid key")
@@ -43,7 +48,7 @@ async def main():
 
         events.append(
             (
-                data["product"],
+                data.get("product"),
                 data["pennkey"],
                 data["datapoint"],
                 data["value"],
