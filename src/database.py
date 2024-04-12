@@ -1,9 +1,23 @@
 import asyncio
 from typing import Any
 
-from sqlalchemy import (Boolean, Column, CursorResult, DateTime, ForeignKey,
-                        Identity, Insert, Integer, LargeBinary, MetaData,
-                        Select, String, Table, Update, func)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    CursorResult,
+    DateTime,
+    ForeignKey,
+    Identity,
+    Insert,
+    Integer,
+    LargeBinary,
+    MetaData,
+    Select,
+    String,
+    Table,
+    Update,
+    func,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
