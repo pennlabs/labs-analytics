@@ -17,6 +17,7 @@ exceptiongroup = "*"
 requests = "*"
 passlib = "*"
 jwcrypto = "*"
+pytest-asyncio = "*"
 pytest = "*"
 
 [dev-packages]
