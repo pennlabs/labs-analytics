@@ -36,7 +36,7 @@ def make_request():
 
 
 # Adjust the number of workers based on your needs and system capabilities
-number_of_requests = 500000  # Number of simultaneous requests you want to make
+number_of_requests = 1000  # Number of simultaneous requests you want to make
 with ThreadPoolExecutor(max_workers=16) as executor:
     futures = [executor.submit(make_request) for _ in range(number_of_requests)]
     for future in futures:

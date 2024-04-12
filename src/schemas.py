@@ -1,8 +1,7 @@
 import json
 from datetime import datetime
+from enum import Enum
 from typing import Optional
-
-from sqlalchemy import Enum
 
 from src.models import CustomModel, Product, RedisEvent
 
