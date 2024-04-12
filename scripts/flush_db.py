@@ -17,6 +17,8 @@ async def batch_insert(events):
 
     try:
         conn = await asyncpg.connect(**DB_SETTINGS)
+        # This is probably? sql injection safe, see:
+        # https://github.com/MagicStack/asyncpg/blob/master/asyncpg/connection.py#L1901
         await conn.executemany(BATCH_INSERT_COMMAND, events)
     except Exception as error:
         print(f"Error: {error}")
