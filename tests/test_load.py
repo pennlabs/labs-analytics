@@ -5,9 +5,14 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
+from test_token import get_tokens
 
+# Runtime should be less that 3 seconds for most laptops
+BENCHMARK_TIME = 3  # seconds
 
 def make_request():
+    (access_token, _) = get_tokens()
+
     url = "http://localhost:8000/analytics"
     payload = json.dumps(
         {
@@ -30,6 +35,7 @@ def make_request():
     )
     headers = {
         "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}",
     }
 
     try:
@@ -56,5 +62,4 @@ def test_load():
     end = time.time()
     runtime = end - start
     print(f"Time taken: {end - start} seconds")
-    # Runtime should be less that 3 seconds for most laptops
-    assert runtime < 3
+    assert runtime < BENCHMARK_TIME
