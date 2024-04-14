@@ -13,5 +13,4 @@ async def test_redis():
 
     payload = [RedisEvent(**d) for d in data]
     await set_redis_keys(payload)
-    print(await get_by_key("test_key"))
     assert await get_by_key("test_key") == b"test_value"

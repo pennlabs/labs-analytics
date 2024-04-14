@@ -10,8 +10,12 @@ from test_token import get_tokens
 # Runtime should be less that 3 seconds for most laptops
 BENCHMARK_TIME = 3  # seconds
 
+# Simulating 16 users making 1000 requests
+NUMBER_OF_REQUESTS = 1000
+THREADS = 16
+
 def make_request():
-    (access_token, _) = get_tokens()
+    access_token, _ = get_tokens()
 
     url = "http://localhost:8000/analytics"
     payload = json.dumps(
@@ -39,7 +43,7 @@ def make_request():
     }
 
     try:
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, data=payload)
     except Exception as e:
         if "ConnectionError" in str(e):
             return "Please make sure the server is running."
@@ -48,12 +52,8 @@ def make_request():
 
 
 def run_threads():
-    # Simulating 16 users making 100000 requests
-    number_of_requests = 1000
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        futures = [executor.submit(make_request) for _ in range(number_of_requests)]
-        # for future in futures:
-        # print(future.result())
+    with ThreadPoolExecutor(max_workers=THREADS) as executor:
+        futures = [executor.submit(make_request) for _ in range(NUMBER_OF_REQUESTS)]
 
 
 def test_load():
@@ -61,5 +61,5 @@ def test_load():
     run_threads()
     end = time.time()
     runtime = end - start
-    print(f"Time taken: {end - start} seconds")
+    print(f"Time taken: {runtime} seconds")
     assert runtime < BENCHMARK_TIME

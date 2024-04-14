@@ -37,4 +37,3 @@ def test_auth():
     token, _ = get_tokens()
     print("Token: ", token)
     assert verify_jwt(token) is not None
-    # assert False
