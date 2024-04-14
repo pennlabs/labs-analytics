@@ -71,11 +71,14 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(main())
+        print("Redis flushed")
     elif sys.argv[1] == "full":
         loop = asyncio.get_event_loop()
         count = loop.run_until_complete(redis_count())
-        print(count)
+        print(f"{count} items found in redis")
         while count > 0:
             loop.run_until_complete(main())
-            count -= 1000
-            print(count)
+            count -= REDIS_BATCH_SIZE
+            count = max(count, 0)
+            print(f"{count} items left in redis")
+        print("Redis flushed")
