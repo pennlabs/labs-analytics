@@ -1,12 +1,22 @@
 import json
 import random
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
+from test_token import get_tokens
 
+# Runtime should be less that 3 seconds for most laptops
+BENCHMARK_TIME = 3  # seconds
+
+# Simulating 16 users making 1000 requests
+NUMBER_OF_REQUESTS = 1000
+THREADS = 16
 
 def make_request():
+    access_token, _ = get_tokens()
+
     url = "http://localhost:8000/analytics"
     payload = json.dumps(
         {
@@ -29,15 +39,27 @@ def make_request():
     )
     headers = {
         "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}",
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    try:
+        response = requests.post(url, headers=headers, data=payload)
+    except Exception as e:
+        if "ConnectionError" in str(e):
+            return "Please make sure the server is running."
+        return str(e)
     return response.text
 
 
-# Adjust the number of workers based on your needs and system capabilities
-number_of_requests = 1000  # Number of simultaneous requests you want to make
-with ThreadPoolExecutor(max_workers=16) as executor:
-    futures = [executor.submit(make_request) for _ in range(number_of_requests)]
-    for future in futures:
-        print(future.result())
+def run_threads():
+    with ThreadPoolExecutor(max_workers=THREADS) as executor:
+        futures = [executor.submit(make_request) for _ in range(NUMBER_OF_REQUESTS)]
+
+
+def test_load():
+    start = time.time()
+    run_threads()
+    end = time.time()
+    runtime = end - start
+    print(f"Time taken: {runtime} seconds")
+    assert runtime < BENCHMARK_TIME
