@@ -4,7 +4,7 @@ from jwcrypto.jwk import JWKSet
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
 
-from .constants import Environment
+from src.constants import Environment
 
 
 class Config(BaseSettings):

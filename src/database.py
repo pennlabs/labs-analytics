@@ -1,32 +1,19 @@
 import asyncio
-from typing import Any
 
 from sqlalchemy import (
-    Boolean,
     Column,
-    CursorResult,
     DateTime,
-    ForeignKey,
     Identity,
-    Insert,
     Integer,
-    LargeBinary,
     MetaData,
-    Select,
     String,
     Table,
-    Update,
-    func,
 )
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from .config import settings
 
-# from constants import DB_NAMING_CONVENTION
-
-DATABASE_URL = str(settings.DATABASE_URL)
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_async_engine(DATABASE_URL)
 
@@ -37,7 +24,7 @@ event = Table(
     metadata,
     Column("id", Integer, Identity(), primary_key=True),
     Column("product", String, nullable=False),
-    Column("pennkey", String, nullable=False),
+    Column("pennkey", String, nullable=True),
     Column("datapoint", String, nullable=False),
     Column("value", String, nullable=False),
     Column("timestamp", DateTime, nullable=False),

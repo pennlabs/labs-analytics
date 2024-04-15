@@ -45,7 +45,7 @@ export class MyChart extends PennLabsChart {
       }
     });
     new CronJob(this, 'load-flush-db', {
-      schedule: cronTime.everyDay(),
+      schedule: cronTime.everyDayAt(7),
       image: backendImage,
       secret,
       cmd: ["python", "scripts/flush_db.py", "full"],
