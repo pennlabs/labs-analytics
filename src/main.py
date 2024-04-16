@@ -4,6 +4,7 @@ from src.auth import verify_jwt
 from src.redis import set_redis_from_tx
 from src.schemas import AnalyticsTxn
 
+
 app = FastAPI()
 
 

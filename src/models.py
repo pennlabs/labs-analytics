@@ -2,7 +2,7 @@ import hashlib
 from enum import Enum
 
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, ConfigDict, json
+from pydantic import BaseModel, ConfigDict
 
 
 class CustomModel(BaseModel):

@@ -4,6 +4,7 @@ from jwcrypto import jwk, jwt
 
 from src.config import settings
 
+
 # The URL to the JWKS endpoint
 JWKS_URL = settings.JWKS_URL
 
@@ -34,9 +35,7 @@ def get_token_from_header(request: Request):
             raise HTTPException(status_code=401, detail="Wrong authentication scheme")
         return token
     except ValueError:
-        raise HTTPException(
-            status_code=401, detail="Invalid authorization header format"
-        )
+        raise HTTPException(status_code=401, detail="Invalid authorization header format")
 
 
 def verify_jwt(token: str = Depends(get_token_from_header)):
