@@ -17,6 +17,53 @@ jobs:
       black: true
       pythonVersion: 3.11-buster
       skipDjangoCheck: true
+  
+  linting:
+    name: Linting Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/share/virtualenvs
+          key: v0-${{ hashFiles('${{ inputs.path }}/Pipfile.lock') }}
+      - name: Install Dependencies (pipenv)
+        run: |-
+          cd ${{ inputs.path }}
+          pip install pipenv
+          pipenv install --deploy --dev
+        if: ${{ inputs.dependencyManager == 'pipenv' }}
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        if: ${{ inputs.dependencyManager == 'poetry' }}
+      - name: Install Dependencies (poetry)
+        run: |-
+          cd ${{ inputs.path }}
+          poetry install --no-root
+        if: ${{ inputs.dependencyManager == 'poetry' }}
+      - name: Lint (flake8)
+        run: |-
+          cd ${{ inputs.path }}
+          ${{ inputs.dependencyManager }} run flake8 .
+        if: ${{ inputs.flake }}
+      - name: Lint (black)
+        run: |-
+          cd ${{ inputs.path }}
+          ${{ inputs.dependencyManager }} run black --check .
+        if: ${{ inputs.black }}
+    container:
+      image: python:${{ inputs.pythonVersion }}
+    env:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+        options: "--health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5"
 
   publish-backend:
     uses: pennlabs/shared-actions/.github/workflows/docker-publish.yaml@v0.1
