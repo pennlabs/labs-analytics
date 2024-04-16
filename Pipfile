@@ -19,6 +19,7 @@ passlib = "*"
 jwcrypto = "*"
 pytest-asyncio = "*"
 pytest = "*"
+pre-commit = "*"
 
 [dev-packages]
 isort = "*"

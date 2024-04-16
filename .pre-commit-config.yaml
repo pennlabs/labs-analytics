@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/pennlabs/pre-commit-hooks
+    rev: v1.0-labs-analytics
+    hooks:
+      - id: black
+        args: [-l100]
+      - id: isort
+        args: []
+      - id: flake8
+        args: [--config, backend/setup.cfg]
+      - id: detect-private-key
