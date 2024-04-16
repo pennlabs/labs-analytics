@@ -33,25 +33,14 @@ jobs:
           cd ${{ inputs.path }}
           pip install pipenv
           pipenv install --deploy --dev
-        if: ${{ inputs.dependencyManager == 'pipenv' }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        if: ${{ inputs.dependencyManager == 'poetry' }}
-      - name: Install Dependencies (poetry)
-        run: |-
-          cd ${{ inputs.path }}
-          poetry install --no-root
-        if: ${{ inputs.dependencyManager == 'poetry' }}
       - name: Lint (flake8)
         run: |-
           cd ${{ inputs.path }}
           ${{ inputs.dependencyManager }} run flake8 .
-        if: ${{ inputs.flake }}
       - name: Lint (black)
         run: |-
           cd ${{ inputs.path }}
           ${{ inputs.dependencyManager }} run black --check .
-        if: ${{ inputs.black }}
     container:
       image: python:${{ inputs.pythonVersion }}
     env:
