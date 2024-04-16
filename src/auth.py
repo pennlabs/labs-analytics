@@ -35,7 +35,9 @@ def get_token_from_header(request: Request):
             raise HTTPException(status_code=401, detail="Wrong authentication scheme")
         return token
     except ValueError:
-        raise HTTPException(status_code=401, detail="Invalid authorization header format")
+        raise HTTPException(
+            status_code=401, detail="Invalid authorization header format"
+        )
 
 
 def verify_jwt(token: str = Depends(get_token_from_header)):
