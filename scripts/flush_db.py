@@ -1,14 +1,12 @@
 import asyncio
 import json
+import sys
 from datetime import datetime
 
 import asyncpg
 from redis.asyncio import Redis
 
-
 from settings.config import DATABASE_URL, REDIS_BATCH_SIZE, REDIS_URL
-
-from redis.asyncio import Redis
 
 
 async def batch_insert(events):
@@ -66,19 +64,12 @@ async def redis_count():
 
 
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 2:
-        loop = asyncio.get_event_loop()
+    loop = asyncio.get_event_loop()
+    count = loop.run_until_complete(redis_count())
+    print(f"{count} items found in redis")
+    while count > 0:
         loop.run_until_complete(main())
-        print("Redis flushed")
-    elif sys.argv[1] == "full":
-        loop = asyncio.get_event_loop()
-        count = loop.run_until_complete(redis_count())
-        print(f"{count} items found in redis")
-        while count > 0:
-            loop.run_until_complete(main())
-            count -= REDIS_BATCH_SIZE
-            count = max(count, 0)
-            print(f"{count} items left in redis")
-        print("Redis flushed")
+        count -= REDIS_BATCH_SIZE
+        count = max(count, 0)
+        print(f"{count} items left in redis")
+    print("Redis flushed")
