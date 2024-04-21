@@ -27,22 +27,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.local/share/virtualenvs
-          key: v0-${{ hashFiles('${{ inputs.path }}/Pipfile.lock') }}
-      - name: Install Dependencies (pipenv)
-        run: |-
-          cd ${{ inputs.path }}
-          pip install pipenv
-          pipenv install --deploy --dev
+          key: v0-${{ hashFiles('./Pipfile.lock') }}
       - name: Lint (flake8)
         run: |-
-          cd ${{ inputs.path }}
-          ${{ inputs.dependencyManager }} run flake8 .
+          cd .
+          pipenv run flake8 .
       - name: Lint (black)
         run: |-
           cd ${{ inputs.path }}
-          ${{ inputs.dependencyManager }} run black --check .
+          pipenv run black --check .
     container:
-      image: python:${{ inputs.pythonVersion }}
+      image: python:3.11-buster
     env:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
     services:
