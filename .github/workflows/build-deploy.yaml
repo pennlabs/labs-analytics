@@ -41,7 +41,7 @@ jobs:
           pipenv run flake8 .
       - name: Lint (black)
         run: |-
-          cd ${{ inputs.path }}
+          cd .
           pipenv run black --check .
     container:
       image: python:3.11-buster
