@@ -14,6 +14,7 @@ BENCHMARK_TIME = 3  # seconds
 NUMBER_OF_REQUESTS = 1000
 THREADS = 16
 
+
 def make_request():
     access_token, _ = get_tokens()
 

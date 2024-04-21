@@ -1,22 +1,24 @@
 import asyncio
 import json
+import sys
 from datetime import datetime
 
 import asyncpg
 from redis.asyncio import Redis
 
-from settings.config import DB_SETTINGS, REDIS_BATCH_SIZE, REDIS_URL
+from settings.config import DATABASE_URL, REDIS_BATCH_SIZE, REDIS_URL
 
 
 async def batch_insert(events):
-    # TODO: Ensure number of events does not exceed SQL max statement tokens
     BATCH_INSERT_COMMAND = """
         INSERT INTO event (product, pennkey, datapoint, value, timestamp)
         VALUES ($1, $2, $3, $4, $5)
         """
 
     try:
-        conn = await asyncpg.connect(**DB_SETTINGS)
+        conn = await asyncpg.connect(dsn=DATABASE_URL)
+        # This is probably? sql injection safe, see:
+        # https://github.com/MagicStack/asyncpg/blob/master/asyncpg/connection.py#L1901
         await conn.executemany(BATCH_INSERT_COMMAND, events)
     except Exception as error:
         print(f"Error: {error}")
@@ -53,9 +55,21 @@ async def main():
 
     await batch_insert(events)
 
-    # await redis.flushall()
+    await redis.flushall()
+
+
+async def redis_count():
+    redis = await Redis.from_url(str(REDIS_URL))
+    return await redis.dbsize()
 
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    count = loop.run_until_complete(redis_count())
+    print(f"{count} items found in redis")
+    while count > 0:
+        loop.run_until_complete(main())
+        count -= REDIS_BATCH_SIZE
+        count = max(count, 0)
+        print(f"{count} items left in redis")
+    print("Redis flushed")

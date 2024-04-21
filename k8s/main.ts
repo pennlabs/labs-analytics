@@ -1,6 +1,8 @@
 import { Construct } from 'constructs';
 import { App } from 'cdk8s';
-import { Application, PennLabsChart, RedisApplication } from '@pennlabs/kittyhawk';
+import { Application, PennLabsChart, RedisApplication, CronJob } from '@pennlabs/kittyhawk';
+
+const cronTime = require('cron-time-generator');
 
 export class MyChart extends PennLabsChart {
   constructor(scope: Construct) {
@@ -41,6 +43,13 @@ export class MyChart extends PennLabsChart {
         }],
         ...ingressProps,
       }
+    });
+    new CronJob(this, 'load-flush-db', {
+      schedule: cronTime.everyDayAt(7),
+      image: backendImage,
+      secret,
+      cmd: ["python", "scripts/flush_db.py", "full"],
+      env: []
     });
   }
 }
