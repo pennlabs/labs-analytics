@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 
 from src.auth import verify_jwt
 from src.redis import set_redis_from_tx
-from src.schemas import AnalyticsTxn
+from src.models import AnalyticsTxn
 
 app = FastAPI()
 

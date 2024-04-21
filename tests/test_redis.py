@@ -1,7 +1,7 @@
 import pytest
 
 from src.redis import get_by_key, set_redis_keys
-from src.schemas import RedisEvent
+from src.models import RedisEvent
 
 
 @pytest.mark.asyncio
