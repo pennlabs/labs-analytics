@@ -34,7 +34,7 @@ jobs:
         run: |-
           cd .
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       - name: Lint (flake8)
         run: |-
           cd .
