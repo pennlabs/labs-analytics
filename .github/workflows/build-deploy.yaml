@@ -28,6 +28,12 @@ jobs:
         with:
           path: ~/.local/share/virtualenvs
           key: v0-${{ hashFiles('./Pipfile.lock') }}
+      - name: Install Dependencies (pipenv)
+        shell: bash
+        continue-on-error: true
+        run: |-
+          cd .
+          pip install pipenv
       - name: Lint (flake8)
         run: |-
           cd .
