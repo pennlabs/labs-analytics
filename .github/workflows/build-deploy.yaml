@@ -67,7 +67,7 @@ jobs:
       # Optional inputs
       
       # Path to the docker context
-      path: backend
+      path: .
       
       # Path to the dockerfile (relative to `path` variable)
       dockerfile: Dockerfile
