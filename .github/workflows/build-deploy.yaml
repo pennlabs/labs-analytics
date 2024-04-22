@@ -18,7 +18,7 @@ jobs:
       pythonVersion: 3.11-buster
       skipDjangoCheck: true
   
-  linting:
+  linting-check:
     name: Linting Check
     runs-on: ubuntu-latest
     steps:
@@ -79,7 +79,7 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     
-    needs: backend-check
+    needs: linting-check
 
   # Deploy
 
