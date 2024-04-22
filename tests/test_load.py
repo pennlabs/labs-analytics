@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 from test_token import get_tokens
 
+
 # Runtime should be less that 3 seconds for most laptops
 BENCHMARK_TIME = 3  # seconds
 
@@ -54,7 +55,8 @@ def make_request():
 
 def run_threads():
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
-        futures = [executor.submit(make_request) for _ in range(NUMBER_OF_REQUESTS)]
+        for _ in range(NUMBER_OF_REQUESTS):
+            executor.submit(make_request)
 
 
 def test_load():

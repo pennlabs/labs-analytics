@@ -16,6 +16,45 @@ jobs:
       flake: true
       black: true
       pythonVersion: 3.11-buster
+      skipDjangoCheck: true
+  
+  linting:
+    name: Linting Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.local/share/virtualenvs
+          key: v0-${{ hashFiles('./Pipfile.lock') }}
+      - name: Install Dependencies (pipenv)
+        shell: bash
+        continue-on-error: true
+        run: |-
+          cd .
+          pip install pipenv
+          pipenv install --dev
+      - name: Lint (flake8)
+        run: |-
+          cd .
+          pipenv run flake8 .
+      - name: Lint (black)
+        run: |-
+          cd .
+          pipenv run black --check .
+    container:
+      image: python:3.11-buster
+    env:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+        options: "--health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5"
 
   publish-backend:
     uses: pennlabs/shared-actions/.github/workflows/docker-publish.yaml@v0.1

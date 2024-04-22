@@ -1,12 +1,11 @@
 import asyncio
 import json
-import sys
 from datetime import datetime
 
 import asyncpg
-from redis.asyncio import Redis
-
 from settings.config import DATABASE_URL, REDIS_BATCH_SIZE, REDIS_URL
+
+from redis.asyncio import Redis
 
 
 async def batch_insert(events):

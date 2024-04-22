@@ -1,17 +1,10 @@
 import asyncio
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Identity,
-    Integer,
-    MetaData,
-    String,
-    Table,
-)
+from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from src.config import settings
+
 
 DATABASE_URL = settings.DATABASE_URL
 

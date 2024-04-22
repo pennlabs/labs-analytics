@@ -24,6 +24,11 @@ git clone git@github.com:pennlabs/labs-analytics.git
 pipenv install
 ```
 
+4. Setting up precommit:
+```bash
+pipenv run pre-commit install
+```
+
 ### Setting up for local development
 
 This guide details the steps to set up `Redis`, `Redis Insight`, `postgres` and `pgweb` instances using Docker, making it easy for development.

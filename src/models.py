@@ -1,16 +1,15 @@
 import hashlib
-from enum import Enum
+import json
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, ConfigDict, json
+from pydantic import BaseModel, ConfigDict
 
 
 class CustomModel(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
+    model_config = ConfigDict(populate_by_name=True,)
 
     def serializable_dict(self, **kwargs):
         default_dict = self.model_dump()
@@ -47,6 +46,7 @@ class Product(Enum):
 class RedisEvent(CustomModel):
     key: bytes | str
     value: bytes | str
+
 
 class AnalyticsTxn(CustomModel):
     product: Product
