@@ -55,7 +55,8 @@ def make_request():
 
 def run_threads():
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
-        _ = [executor.submit(make_request) for _ in range(NUMBER_OF_REQUESTS)]
+        for _ in range(NUMBER_OF_REQUESTS):
+            executor.submit(make_request)
 
 
 def test_load():
