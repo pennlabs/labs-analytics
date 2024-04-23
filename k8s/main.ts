@@ -33,7 +33,9 @@ export class MyChart extends PennLabsChart {
         image: backendImage,
         secret,
         replicas: 1,
-        env: [],
+        env: [
+          { name: 'REDIS_URL', value: 'redis://labs-analytics-redis:6379' },
+        ],
       },
       ingress: {
         rules: [{
