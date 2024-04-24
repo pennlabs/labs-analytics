@@ -21,7 +21,6 @@ pytest-asyncio = "*"
 pytest = "*"
 pre-commit = "*"
 click = "==8.0.4"
-psycopg2 = "*"
 
 [dev-packages]
 flake8 = "==6.1.0"
