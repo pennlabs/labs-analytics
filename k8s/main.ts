@@ -9,7 +9,7 @@ export class MyChart extends PennLabsChart {
     super(scope);
 
     const backendImage = 'pennlabs/labs-analytics-backend';
-    const secret = "platform"
+    const secret = "platform-analytics"
     const domain = "analytics.pennlabs.org"
 
     const ingressProps = {
@@ -25,7 +25,6 @@ export class MyChart extends PennLabsChart {
 	    image: 'redis/redis-stack-server',
         tag: '6.2.6-v6'
       },
-      persistData: true,
     });
 
     new Application(this, 'backend', {
