@@ -14,9 +14,9 @@ event = Table(
     metadata,
     Column("id", Integer, Identity(), primary_key=True),
     Column("product", String, nullable=False),
-    Column("pennkey", String, nullable=False),
+    Column("pennkey", String, nullable=True),
     Column("datapoint", String, nullable=False),
-    Column("value", String, nullable=False),
+    Column("value", String, nullable=True),
     Column("timestamp", DateTime, nullable=False),
 )
 
