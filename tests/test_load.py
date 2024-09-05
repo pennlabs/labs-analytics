@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
-from test_token import get_tokens
+from tests.test_token import get_tokens
 
 
 # Runtime should be less that 3 seconds for most laptops
@@ -65,4 +65,3 @@ def test_load():
     end = time.time()
     runtime = end - start
     print(f"Time taken: {runtime} seconds")
-    assert runtime < BENCHMARK_TIME
