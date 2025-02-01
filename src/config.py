@@ -12,7 +12,7 @@ class Config(BaseSettings):
     REDIS_URL: RedisDsn
 
     JWKS_CACHE: JWKSet | None = None
-    JWKS_URL: str = "https://platform.pennlabs.org/identity/jwks/"
+    JWKS_URL: str = "https://platform.pennlabs.org/accounts/.well-known/jwks.json"
 
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 
