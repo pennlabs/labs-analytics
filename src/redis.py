@@ -28,3 +28,7 @@ async def get_by_key(key: str) -> Optional[str]:
 
 async def delete_by_key(key: str) -> None:
     return await redis_client.delete(key)
+
+
+async def redis_count():
+    return await redis_client.dbsize()

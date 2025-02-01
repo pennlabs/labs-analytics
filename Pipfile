@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 fastapi = "*"
 pip = "*"
-install = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
 pydantic-settings = "*"
@@ -20,8 +19,9 @@ jwcrypto = "*"
 pytest-asyncio = "*"
 pytest = "*"
 pre-commit = "*"
-click = "==8.0.4"
+click = "*"
 psycopg2 = "*"
+fastapi-utilities = "*"
 
 [dev-packages]
 flake8 = "==6.1.0"
@@ -32,7 +32,7 @@ black = "==19.10b0"
 coverage = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
 
 [scripts]
 docker= "docker-compose up -d"

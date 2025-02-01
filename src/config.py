@@ -1,15 +1,33 @@
 from typing import Any
+from enum import Enum
 
 from jwcrypto.jwk import JWKSet
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
 
-from src.constants import Environment
+
+class Environment(str, Enum):
+    DEVELOPMENT = "DEVELOPMENT"
+    TESTING = "TESTING"
+    PRODUCTION = "PRODUCTION"
+
+    @property
+    def is_debug(self):
+        return self in (self.DEVELOPMENT, self.TESTING)
+
+    @property
+    def is_testing(self):
+        return self == self.TESTING
+
+    @property
+    def is_deployed(self) -> bool:
+        return self in (self.PRODUCTION)
 
 
 class Config(BaseSettings):
     DATABASE_URL: PostgresDsn
     REDIS_URL: RedisDsn
+    REDIS_BATCH_SIZE: int = 1000
 
     JWKS_CACHE: JWKSet | None = None
     JWKS_URL: str = "https://platform.pennlabs.org/accounts/.well-known/jwks.json"
