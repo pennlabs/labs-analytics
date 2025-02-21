@@ -29,7 +29,6 @@ black = "==19.10b0"
 psycopg2 = "*"
 
 [dev-packages]
-
 coverage = "*"
 
 [requires]
@@ -38,5 +37,6 @@ python_version = "3.11"
 [scripts]
 docker= "docker-compose up -d"
 lint = "./scripts/lint"
-start = "uvicorn src.main:app --reload"
+start = "uvicorn src.main:app --reload --port 8080"
 test = "pytest"
+db = "./scripts/create_table.py"
