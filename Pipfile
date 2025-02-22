@@ -37,6 +37,6 @@ python_version = "3.11"
 [scripts]
 docker= "docker-compose up -d"
 lint = "./scripts/lint"
-start = "uvicorn src.main:app --reload --port 8080"
+start = "uvicorn src.main:app --reload"
 test = "pytest"
 db = "./scripts/create_table.py"

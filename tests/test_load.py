@@ -17,10 +17,8 @@ NUMBER_OF_REQUESTS = 1000
 THREADS = 16
 
 
-def make_request():
-    access_token, _ = get_tokens()
-
-    url = "http://localhost:80/analytics"
+def make_request(token: str):
+    url = "http://localhost:80/analytics/"
     payload = json.dumps(
         {
             "product": random.randint(1, 10),
@@ -91,7 +89,7 @@ def make_request():
     )
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {access_token}",
+        "Authorization": f"Bearer {token}",
     }
 
     try:
@@ -105,8 +103,10 @@ def make_request():
 
 def run_threads():
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
+        # Fetch access token once to avoid repeated requests.
+        access_token, _ = get_tokens()
         for _ in range(NUMBER_OF_REQUESTS):
-            executor.submit(make_request)
+            executor.submit(make_request, access_token)
 
 
 def test_load():

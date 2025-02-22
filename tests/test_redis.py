@@ -1,5 +1,5 @@
-import datetime
 import random
+from datetime import datetime
 
 import pytest
 
