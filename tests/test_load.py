@@ -5,7 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
-from test_token import get_tokens
+
+from tests.test_token import get_tokens
 
 
 # Runtime should be less that 3 seconds for most laptops
@@ -16,32 +17,79 @@ NUMBER_OF_REQUESTS = 1000
 THREADS = 16
 
 
-def make_request():
-    access_token, _ = get_tokens()
-
-    url = "http://localhost:8000/analytics"
+def make_request(token: str):
+    url = "http://localhost:80/analytics/"
     payload = json.dumps(
         {
             "product": random.randint(1, 10),
             "pennkey": "test_usr",
-            "timestamp": int(datetime.now().timestamp()),
             "data": [
-                {"key": "user.click", "value": str(random.randint(1, 1000))},
-                {"key": "user.drag", "value": str(random.randint(1, 1000))},
-                {"key": "data.dowload", "value": str(random.randint(1, 1000))},
-                {"key": "user.drive", "value": str(random.randint(1, 1000))},
-                {"key": "user.play", "value": str(random.randint(1, 1000))},
-                {"key": "user.sit", "value": str(random.randint(1, 1000))},
-                {"key": "user.stand", "value": str(random.randint(1, 1000))},
-                {"key": "user.bike", "value": str(random.randint(1, 1000))},
-                {"key": "user.flip", "value": str(random.randint(1, 1000))},
-                {"key": "food.eat", "value": str(random.randint(1, 1000))},
+                {
+                    "key": "user.click",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.drag",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "data.dowload",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.drive",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.play",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.sit",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.stand",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.bike",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "user.flip",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
+                {
+                    "key": "food.eat",
+                    "value": str(random.randint(1, 1000)),
+                    "timestamp": int(datetime.now().timestamp())
+                    + random.randint(1, 1000),
+                },
             ],
         }
     )
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {access_token}",
+        "Authorization": f"Bearer {token}",
     }
 
     try:
@@ -55,8 +103,10 @@ def make_request():
 
 def run_threads():
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
+        # Fetch access token once to avoid repeated requests.
+        access_token, _ = get_tokens()
         for _ in range(NUMBER_OF_REQUESTS):
-            executor.submit(make_request)
+            executor.submit(make_request, access_token)
 
 
 def test_load():
