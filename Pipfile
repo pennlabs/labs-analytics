@@ -27,6 +27,7 @@ flake8-quotes = "==3.3.2"
 flake8-absolute-import = "*"
 black = "==19.10b0"
 psycopg2 = "*"
+sentry-sdk = {version = "*", extras = ["fastapi"]}
 
 [dev-packages]
 
