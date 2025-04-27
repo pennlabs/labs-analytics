@@ -47,20 +47,35 @@ class RedisEvent(CustomModel):
     key: bytes | str
     value: bytes | str
 
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.key = data["key"]
+        self.value = data["value"]
+
+
+class AnalyticsValue(CustomModel):
+    key: str
+    value: str
+    timestamp: datetime
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.key = data["key"]
+        self.value = data["value"]
+        self.timestamp = datetime.fromtimestamp(data["timestamp"])
+
 
 class AnalyticsTxn(CustomModel):
     product: Product
     pennkey: Optional[str] = None
-    timestamp: datetime
-    data: list[RedisEvent]
+    data: list[AnalyticsValue]
 
     # init with JSON data
     def __init__(self, **data):
         super().__init__(**data)
-        self.timestamp = datetime.fromtimestamp(data["timestamp"])
-        self.data = [RedisEvent(**event) for event in data["data"]]
         self.product = Product(data["product"])
         self.pennkey = data.get("pennkey")
+        self.data = [AnalyticsValue(**value) for value in data["data"]]
 
     def get_redis_key(self):
         return f"{self.product}.{self.hash_as_key()}"
@@ -68,16 +83,16 @@ class AnalyticsTxn(CustomModel):
     def build_redis_data(self) -> list[RedisEvent]:
         return [
             RedisEvent(
-                key=f"{self.get_redis_key()}.{event.hash_as_key()}",
+                key=f"{self.get_redis_key()}.{value.hash_as_key()}",
                 value=json.dumps(
                     {
                         "product": str(self.product),
                         "pennkey": self.pennkey,
-                        "timestamp": self.timestamp.timestamp(),
-                        "datapoint": event.key,
-                        "value": event.value,
+                        "timestamp": value.timestamp.timestamp(),
+                        "datapoint": value.key,
+                        "value": value.value,
                     }
                 ),
             )
-            for event in self.data
+            for value in self.data
         ]
