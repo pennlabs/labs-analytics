@@ -13,10 +13,9 @@ class Config(BaseSettings):
 
     JWKS_CACHE: list[JWKSet] | None = None
     JWKS_URL: dict[str, str] = {
-        "b2b":"https://platform.pennlabs.org/identity/jwks/",
-        "user":"https://platform.pennlabs.org/accounts/.well-known/jwks.json"
+        "b2b": "https://platform.pennlabs.org/identity/jwks/",
+        "user": "https://platform.pennlabs.org/accounts/.well-known/jwks.json",
     }
-
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 
     ENVIRONMENT: Environment = Environment.PRODUCTION

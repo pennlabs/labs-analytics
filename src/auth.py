@@ -16,10 +16,8 @@ def get_jwks():
         for key in settings.JWKS_URL.keys():
             if key not in settings.JWKS_CACHE:
                 missing = True
-        
         if not missing:
             return settings.JWKS_CACHE
-
     # Make a request to get the JWKS
     for key in settings.JWKS_URL:
         try:
@@ -53,7 +51,6 @@ def verify_jwt(token: str = Depends(get_token_from_header)):
         try:
             decoded_token = jwt.JWT(key=key, jwt=token)
             return decoded_token.claims
-        except:
+        except Exception:
             pass
-    
-    raise HTTPException(status_code=401, detail="Failed to verify JWT token against public keys array.")
+    raise HTTPException(status_code=401, detail="Failed to verify JWT token")
