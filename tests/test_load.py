@@ -5,7 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
-from test_token import get_tokens
+
+from tests.test_token import get_tokens
 
 
 # Runtime should be less that 3 seconds for most laptops
@@ -19,7 +20,7 @@ THREADS = 16
 def make_request():
     access_token, _ = get_tokens()
 
-    url = "http://localhost:8000/analytics"
+    url = "http://localhost:80/analytics/"
     payload = json.dumps(
         {
             "product": random.randint(1, 10),

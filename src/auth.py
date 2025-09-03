@@ -5,10 +5,6 @@ from jwcrypto import jwk, jwt
 from src.config import settings
 
 
-# The URL to the JWKS endpoint
-JWKS_URL = settings.JWKS_URL
-
-
 def get_jwks():
     if settings.JWKS_CACHE:
         # Check to make sure we have a cached JWK for each key, otherwise refetch all.
@@ -17,15 +13,16 @@ def get_jwks():
             if key not in settings.JWKS_CACHE:
                 missing = True
         if not missing:
+            print("Can used cached keys")
             return settings.JWKS_CACHE
     # Make a request to get the JWKS
     for key in settings.JWKS_URL:
         try:
-            response = requests.get(JWKS_URL)
+            response = requests.get(settings.JWKS_URL[key])
             jwks = jwk.JWKSet.from_json(response.text)
             settings.JWKS_CACHE[key] = jwks
         except Exception as e:
-            del settings.JWKS_CACHE[key]
+            print(str(e))
             raise HTTPException(status_code=500, detail=str(e))
     return settings.JWKS_CACHE
 
@@ -49,7 +46,7 @@ def verify_jwt(token: str = Depends(get_token_from_header)):
     public_keys = get_jwks()
     for key in public_keys:
         try:
-            decoded_token = jwt.JWT(key=key, jwt=token)
+            decoded_token = jwt.JWT(key=public_keys[key], jwt=token)
             return decoded_token.claims
         except Exception:
             pass
