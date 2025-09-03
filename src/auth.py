@@ -13,7 +13,6 @@ def get_jwks():
             if key not in settings.JWKS_CACHE:
                 missing = True
         if not missing:
-            print("Can used cached keys")
             return settings.JWKS_CACHE
     # Make a request to get the JWKS
     for key in settings.JWKS_URL:
