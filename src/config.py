@@ -11,8 +11,11 @@ class Config(BaseSettings):
     DATABASE_URL: PostgresDsn
     REDIS_URL: RedisDsn
 
-    JWKS_CACHE: JWKSet | None = None
-    JWKS_URL: str = "https://platform.pennlabs.org/identity/jwks/"
+    JWKS_CACHE: list[JWKSet] | None = None
+    JWKS_URL: dict[str, str] = {
+        "b2b":"https://platform.pennlabs.org/identity/jwks/",
+        "user":"https://platform.pennlabs.org/accounts/.well-known/jwks.json"
+    }
 
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 
