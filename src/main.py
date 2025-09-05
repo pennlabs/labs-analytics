@@ -19,6 +19,11 @@ sentry_sdk.init(
 app = FastAPI()
 
 
+@app.get("/oh-my-god-im-gonna-error")
+async def error():
+    return {"message": 1 / 0}
+
+
 @app.post("/analytics/")
 async def store_data(request: Request, token: dict = Depends(verify_jwt)):
     try:
