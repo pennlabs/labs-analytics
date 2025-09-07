@@ -38,7 +38,6 @@ async def main():
             data = json.loads(data_str)
         except ValueError as e:
             print("flush_db: invalid key")
-            print(data_bytes.decode("utf-8").replace("'", '"'))
             print(e)
             continue
 
