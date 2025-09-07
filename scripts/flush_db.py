@@ -34,12 +34,12 @@ async def main():
     async for key in items:
         try:
             data_bytes = await redis.get(key)
-            data = data_bytes.decode("utf-8").replace("'", '"')
-            json_string = json.dumps(data)
-            data = json.loads(json.loads(json_string))
+            data_str = data_bytes.decode("utf-8")
+            data = json.loads(data_str)
         except ValueError as e:
-            print(e)
             print("flush_db: invalid key")
+            print(data_bytes.decode("utf-8").replace("'", '"'))
+            print(e)
             continue
 
         events.append(
