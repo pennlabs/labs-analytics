@@ -29,7 +29,7 @@ async def test_access_token_redis_valid():
     }
 
     await set_redis_access_token(token, json.dumps(data))
-    val = await get_by_key(token)
+    val = await get_by_key(f"USER.{token}")
     obj = json.loads(val)
     assert val is not None
     assert obj["active"]
@@ -44,7 +44,7 @@ async def test_access_token_redis_invalid():
         "user": {"username": "bfranklin"},
     }
     await set_redis_access_token(token, json.dumps(data))
-    val = await get_by_key(token)
+    val = await get_by_key(f"USER.{token}")
     obj = json.loads(val)
     assert val is not None
     assert not obj["active"]

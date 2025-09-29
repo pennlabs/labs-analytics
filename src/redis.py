@@ -41,7 +41,7 @@ async def set_redis_access_token(token: str, data: str | None) -> None:
     # add a 5-second buffer for inactive tokens to reduce load to platform
     ttl = int(dataObj["exp"] - datetime.now().timestamp()) if active else 5
     async with redis_client.pipeline(transaction=False) as pipe:
-        await pipe.set(token, json.dumps(stored_data), ex=ttl)
+        await pipe.set(f"USER.{token}", json.dumps(stored_data), ex=ttl)
         await pipe.execute()
 
 

@@ -55,7 +55,7 @@ async def verify_auth(token: str = Depends(get_token_from_header)):
         # check to see if platform introspect returns a positive result
         # note that the token itself should have the "introspection" scope
         # (so that it can inspect itself)
-        cached_token = await get_by_key(token)
+        cached_token = await get_by_key(f"USER.{token}")
         if cached_token:
             data = json.loads(cached_token)
             if not data["active"]:
