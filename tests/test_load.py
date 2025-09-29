@@ -5,7 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import requests
-from test_token import get_tokens
+
+from tests.test_token import get_tokens, get_user_token
 
 
 # Runtime should be less that 3 seconds for most laptops
@@ -16,14 +17,12 @@ NUMBER_OF_REQUESTS = 1000
 THREADS = 16
 
 
-def make_request():
-    access_token, _ = get_tokens()
-
-    url = "http://localhost:8000/analytics"
+def make_request(access_token, user):
+    url = "http://localhost:80/analytics/"
     payload = json.dumps(
         {
             "product": random.randint(1, 10),
-            "pennkey": "test_usr",
+            "pennkey": user,
             "timestamp": int(datetime.now().timestamp()),
             "data": [
                 {"key": "user.click", "value": str(random.randint(1, 1000))},
@@ -53,16 +52,25 @@ def make_request():
     return response.text
 
 
-def run_threads():
+def run_threads(access_token, user: str = "test_usr"):
     with ThreadPoolExecutor(max_workers=THREADS) as executor:
         for _ in range(NUMBER_OF_REQUESTS):
-            executor.submit(make_request)
+            executor.submit(make_request, access_token, user)
 
 
 def test_load():
+    access_token, _ = get_tokens()
     start = time.time()
-    run_threads()
+    run_threads(access_token)
     end = time.time()
     runtime = end - start
-    print(f"Time taken: {runtime} seconds")
+    print(f"B2B Time taken: {runtime} seconds")
+    assert runtime < BENCHMARK_TIME
+
+    start = time.time()
+    (token, user) = get_user_token()
+    run_threads(token, user)
+    end = time.time()
+    runtime = end - start
+    print(f"User Time taken: {runtime} seconds")
     assert runtime < BENCHMARK_TIME

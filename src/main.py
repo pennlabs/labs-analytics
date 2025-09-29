@@ -24,6 +24,13 @@ async def store_data(request: Request, token: dict = Depends(verify_auth)):
     try:
         body = await request.json()
         txn = AnalyticsTxn(**body)
+        if token.get("username") and token["username"] != txn.pennkey:
+            raise HTTPException(
+                status_code=403,
+                detail="User account access tokens can only record their Pennkey",
+            )
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
