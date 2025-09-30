@@ -41,3 +41,6 @@ docker= "docker-compose up -d"
 lint = "./scripts/lint"
 start = "uvicorn src.main:app --reload"
 test = "pytest -s --asyncio-mode=auto"
+create_table = "python -m scripts.create_table create"
+dump_to_db = "python -m scripts.flush_db"
+

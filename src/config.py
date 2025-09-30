@@ -8,6 +8,7 @@ from src.constants import Environment
 
 
 class Config(BaseSettings):
+    # Pydantic normalizes postgres URL to postgres://
     DATABASE_URL: PostgresDsn
     REDIS_URL: RedisDsn
 
@@ -27,6 +28,10 @@ class Config(BaseSettings):
 
 
 settings = Config()
+
+ASYNCPG_DATABASE_URL: str = (
+    str(settings.DATABASE_URL).replace("postgres", "postgresql+asyncpg", 1)
+)
 
 app_configs: dict[str, Any] = {
     "title": "Labs Analytics API",

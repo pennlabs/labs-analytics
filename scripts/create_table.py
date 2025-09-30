@@ -1,13 +1,12 @@
 import asyncio
 
-from settings.config import DATABASE_URL
 from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from src.config import ASYNCPG_DATABASE_URL
 
-engine = create_async_engine(
-    str(DATABASE_URL).replace("postgres", "postgresql+asyncpg", 1)
-)
+
+engine = create_async_engine(ASYNCPG_DATABASE_URL)
 
 metadata = MetaData()
 

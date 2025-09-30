@@ -3,8 +3,8 @@ import os
 import sentry_sdk
 from fastapi import Depends, FastAPI, HTTPException, Request
 
-from database import query
 from src.auth import verify_auth
+from src.database import query
 from src.models import AnalyticsTxn
 from src.redis import set_redis_from_tx
 
@@ -51,8 +51,8 @@ async def get_count(
     before: int | None = None,
     product: int | None = None,
 ):
-    await query()
-    return {"message": "done"}
+
+    return {"message": str(await query())}
     # perform query
     # cache?
     # return value

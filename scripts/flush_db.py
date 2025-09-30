@@ -3,9 +3,14 @@ import json
 from datetime import datetime
 
 import asyncpg
-from settings.config import DATABASE_URL, REDIS_BATCH_SIZE, REDIS_URL
 
 from redis.asyncio import Redis
+from src.config import settings
+
+
+DATABASE_URL = settings.DATABASE_URL
+REDIS_BATCH_SIZE = 1000
+REDIS_URL = settings.REDIS_URL
 
 
 async def batch_insert(events):
@@ -15,7 +20,7 @@ async def batch_insert(events):
         """
 
     try:
-        conn = await asyncpg.connect(dsn=DATABASE_URL)
+        conn = await asyncpg.connect(dsn=str(DATABASE_URL))
         # This is probably? sql injection safe, see:
         # https://github.com/MagicStack/asyncpg/blob/master/asyncpg/connection.py#L1901
         await conn.executemany(BATCH_INSERT_COMMAND, events)
@@ -34,6 +39,7 @@ async def main():
     # Excluding user access token storage (which is also in redis)
     async for key in items:
         if "USER." in str(key):
+            print(str(key))
             continue
 
         try:

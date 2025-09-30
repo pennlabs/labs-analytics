@@ -2,15 +2,13 @@
 from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Table, select
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from src.config import settings
+from src.config import ASYNCPG_DATABASE_URL
 
 
 # fmt: on
 
-
-DATABASE_URL = settings.DATABASE_URL
-
-engine = create_async_engine(DATABASE_URL)
+print(ASYNCPG_DATABASE_URL)
+engine = create_async_engine(ASYNCPG_DATABASE_URL.split("?")[0])
 
 metadata = MetaData()
 
@@ -27,7 +25,7 @@ event = Table(
 
 
 async def query():
-    statement = select(event).where(event.c.pennkey == "melitski")
+    statement = select(event).where(event.c.pennkey == "test_usr")
     async with engine.begin() as conn:
         res = await conn.execute(statement)
-        print(res["datapoint"])
+        return len(list(res))

@@ -39,6 +39,7 @@ def get_user_token():
 
 def test_get_tokens():
     token, refresh = get_tokens()
+    print(token)
     assert token != ""
     assert refresh != ""
 
