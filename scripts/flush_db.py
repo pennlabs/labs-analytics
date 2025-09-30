@@ -33,7 +33,7 @@ async def main():
     # Async operation to perform Redis retrieval and computation in parallel
     # Excluding user access token storage (which is also in redis)
     async for key in items:
-        if "USER." in key:
+        if "USER." in str(key):
             continue
 
         try:
