@@ -1,9 +1,11 @@
-import asyncio
-
-from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Table
+# fmt: off
+from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Table, select
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from src.config import settings
+
+
+# fmt: on
 
 
 DATABASE_URL = settings.DATABASE_URL
@@ -24,10 +26,8 @@ event = Table(
 )
 
 
-# Create all tables in the metadata
-async def create_tables():
+async def query():
+    statement = select(event).where(event.c.pennkey == "melitski")
     async with engine.begin() as conn:
-        await conn.run_sync(metadata.create_all)
-
-
-asyncio.run(create_tables())
+        res = await conn.execute(statement)
+        print(res["datapoint"])
