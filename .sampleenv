@@ -8,7 +8,7 @@ CORS_ORIGINS=["http://localhost:3000"]
 
 
 # postgres variables, must be the same as in DATABASE_URL
-DATABASE_URL=postgresql+asyncpg://labs:analytics@localhost:5432/lab-analytics?
+DATABASE_URL=postgres://labs:analytics@localhost:5432/lab-analytics?
 POSTGRES_USER=labs
 POSTGRES_PASSWORD=analytics
 POSTGRES_DB=lab-analytics
