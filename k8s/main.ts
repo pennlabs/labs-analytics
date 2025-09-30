@@ -49,7 +49,7 @@ export class MyChart extends PennLabsChart {
       schedule: cronTime.everyDayAt(7),
       image: backendImage,
       secret,
-      cmd: ["python", "scripts/flush_db.py", "full"],
+      cmd: ["python", "-m scripts.flush_db", "full"],
       env: []
     });
   }
