@@ -1,3 +1,5 @@
+import json
+from datetime import datetime
 from typing import Optional
 
 from redis.asyncio import Redis
@@ -20,6 +22,27 @@ async def set_redis_keys(
 async def set_redis_from_tx(tx: AnalyticsTxn) -> None:
     data = tx.build_redis_data()
     await set_redis_keys(data)
+
+
+async def set_redis_access_token(token: str, data: str | None) -> None:
+    dataObj = json.loads(data) if data else None
+    active = dataObj["active"] if dataObj else False
+    # don't store the entire object for memory sake
+    stored_data = (
+        {
+            "active": dataObj["active"],
+            "exp": dataObj["exp"],
+            "user": {"username": dataObj["user"]["username"]},
+        }
+        if active
+        else {"active": False}
+    )
+    # implication: active = true ==> exp > now
+    # add a 5-second buffer for inactive tokens to reduce load to platform
+    ttl = int(dataObj["exp"] - datetime.now().timestamp()) if active else 5
+    async with redis_client.pipeline(transaction=False) as pipe:
+        await pipe.set(f"USER.{token}", json.dumps(stored_data), ex=ttl)
+        await pipe.execute()
 
 
 async def get_by_key(key: str) -> Optional[str]:

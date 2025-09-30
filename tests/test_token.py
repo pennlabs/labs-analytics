@@ -1,21 +1,26 @@
 # Test to generate jwt token from Penn Labs platforms
 import os
 
+import pytest
 import requests
 
-from src.auth import verify_jwt
+from src.auth import verify_auth
 
 
 ATTEST_URL = "https://platform.pennlabs.org/identity/attest/"
 
 # Using Penn Basics DLA Account for testing, will not work if you don't have that in .env
-CLIENT_ID: str = os.environ.get("CLIENT_ID") or ""
-CLIENT_SECRET: str = os.environ.get("CLIENT_SECRET") or ""
+CLIENT_ID: str = os.environ.get("TESTING_CLIENT_ID") or ""
+CLIENT_SECRET: str = os.environ.get("TESTING_CLIENT_SECRET") or ""
+ACCESS_TOKEN: str = os.environ.get("TESTING_USER_ACCESS_TOKEN") or ""
+ACCESS_TOKEN_USER: str = os.environ.get("TESTING_USERNAME") or ""
 
 
 def test_env_vars():
-    assert os.environ.get("CLIENT_ID") is not None
-    assert os.environ.get("CLIENT_SECRET") is not None
+    assert os.environ.get("TESTING_CLIENT_ID") is not None
+    assert os.environ.get("TESTING_CLIENT_SECRET") is not None
+    assert os.environ.get("TESTING_USER_ACCESS_TOKEN") is not None
+    assert os.environ.get("TESTING_USERNAME") is not None
 
 
 def get_tokens():
@@ -28,13 +33,17 @@ def get_tokens():
     return ("", "")
 
 
+def get_user_token():
+    return (ACCESS_TOKEN, ACCESS_TOKEN_USER)
+
+
 def test_get_tokens():
     token, refresh = get_tokens()
-    assert token is not None
-    assert refresh is not None
+    assert token != ""
+    assert refresh != ""
 
 
-def test_auth():
+@pytest.mark.asyncio(loop_scope="module")
+async def test_auth_b2b_token():
     token, _ = get_tokens()
-    print("Token: ", token)
-    assert verify_jwt(token) is not None
+    assert await verify_auth(token) is not None
