@@ -31,7 +31,11 @@ async def main():
     events = list()
 
     # Async operation to perform Redis retrieval and computation in parallel
+    # Excluding user access token storage (which is also in redis)
     async for key in items:
+        if "USER." in str(key):
+            continue
+
         try:
             data_bytes = await redis.get(key)
             data_str = data_bytes.decode("utf-8")

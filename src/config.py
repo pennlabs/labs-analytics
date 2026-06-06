@@ -13,6 +13,7 @@ class Config(BaseSettings):
 
     JWKS_CACHE: JWKSet | None = None
     JWKS_URL: str = "https://platform.pennlabs.org/identity/jwks/"
+    INTROSPECT_URL: str = "https://platform.pennlabs.org/accounts/introspect"
 
     SITE_DOMAIN: str = "analytics.pennlabs.org"
 

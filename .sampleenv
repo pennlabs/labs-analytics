@@ -1,0 +1,22 @@
+REDIS_URL=redis://localhost:6379
+REDIS_BATCH_SIZE=1000
+SITE_DOMAIN=127.0.0.1
+SECURE_COOKIES=false
+ENVIRONMENT=DEVELOPMENT
+CORS_HEADERS=["*"]
+CORS_ORIGINS=["http://localhost:3000"]
+
+
+# postgres variables, must be the same as in DATABASE_URL
+DATABASE_URL=postgres://labs:analytics@localhost:5432/lab-analytics?
+POSTGRES_USER=labs
+POSTGRES_PASSWORD=analytics
+POSTGRES_DB=lab-analytics
+
+# This client must be able to use the JWT B2B framework
+TESTING_CLIENT_ID=CLIENT_ID_FOR_B2B_TESTING
+TESTING_CLIENT_SECRET=CLIENT_SECRET_FOR_B2B_TESTING
+
+# You'll need to issue a token that is valid for "introspection"
+TESTING_USER_ACCESS_TOKEN=VALID_USER_ACCESS_TOKEN
+TESTING_USERNAME=USERNAME_ASSOCIATED_WITH_ACCESS_TOKEN

@@ -5,7 +5,9 @@ from sqlalchemy import Column, DateTime, Identity, Integer, MetaData, String, Ta
 from sqlalchemy.ext.asyncio import create_async_engine
 
 
-engine = create_async_engine(str(DATABASE_URL))
+engine = create_async_engine(
+    str(DATABASE_URL).replace("postgres", "postgresql+asyncpg", 1)
+)
 
 metadata = MetaData()
 
